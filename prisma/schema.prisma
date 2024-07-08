@@ -8,39 +8,51 @@ datasource db {
 }
 
 model Employee {
-  id                 Int    @id @default(autoincrement())
+  id                 Int               @id @default(autoincrement())
   fullname           String
   subdivision        String
   position           String
   status             String
-  peoplePartner      Int
+  peoplePartnerE     Employee          @relation("PeoplePartner", fields: [peoplePartner], references: [id])
+  peoplePartner      Int               @unique
   outOfOfficeBalance Int
+  LeaveRequest       LeaveRequest[]
+  ApprovalRequest    ApprovalRequest[]
+  Project            Project[]
+  employee           Employee?         @relation("PeoplePartner")
 }
 
 model LeaveRequest {
-  id            Int      @id @default(autoincrement())
-  employee      Int
-  absenceReason String
-  startDate     DateTime
-  endDate       DateTime
-  comment       String
-  status        String
+  id              Int               @id @default(autoincrement())
+  employeeLR      Employee?         @relation(fields: [employee], references: [id])
+  employee        Int
+  absenceReason   String
+  startDate       DateTime
+  endDate         DateTime
+  comment         String
+  status          String
+  ApprovalRequest ApprovalRequest[]
 }
 
 model ApprovalRequest {
-  id           Int    @id @default(autoincrement())
-  approver     Int
-  leaveRequest Int
-  status       String
-  comment      String
+  id             Int          @id @default(autoincrement())
+  approverAR     Employee     @relation(fields: [approver], references: [id])
+  approver       Int
+  leaveRequestAR LeaveRequest @relation(fields: [leaveRequestId], references: [id])
+  leaveRequest   Int
+  status         String
+  comment        String
+  leaveRequestId Int
 }
 
 model Project {
-  id             Int      @id @default(autoincrement())
-  projectType    String
-  startDate      DateTime
-  endDate        DateTime
-  projectManager Int
-  comment        String
-  status         String
+  id              Int      @id @default(autoincrement())
+  projectType     String
+  startDate       DateTime
+  endDate         DateTime
+  projectManagerP Employee @relation(fields: [projectManager], references: [id])
+  projectManager  Int
+  comment         String
+  status          String
+  employeeId      Int
 }
