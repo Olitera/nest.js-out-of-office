@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { Employee } from '@prisma/client';
 
@@ -30,6 +38,4 @@ export class EmployeeController {
   deleteEmployee(@Param('id') id: number) {
     return this.employeeService.deleteEmployee(+id);
   }
-
-
 }

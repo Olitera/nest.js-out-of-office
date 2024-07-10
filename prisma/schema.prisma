@@ -31,7 +31,7 @@ model Employee {
 model LeaveRequest {
   id              Int               @id @default(autoincrement())
   employeeLR      Employee?         @relation(fields: [employee], references: [id])
-  employee        Int
+  employee        Int?
   absenceReason   String
   startDate       DateTime
   endDate         DateTime
@@ -41,24 +41,22 @@ model LeaveRequest {
 }
 
 model ApprovalRequest {
-  id             Int          @id @default(autoincrement())
-  approverAR     Employee     @relation(fields: [approver], references: [id])
-  approver       Int
-  leaveRequestAR LeaveRequest @relation(fields: [leaveRequestId], references: [id])
-  leaveRequest   Int
+  id             Int           @id @default(autoincrement())
+  approverAR     Employee?     @relation(fields: [approver], references: [id])
+  approver       Int?
+  leaveRequestAR LeaveRequest? @relation(fields: [leaveRequest], references: [id])
+  leaveRequest   Int?
   status         String
   comment        String
-  leaveRequestId Int
 }
 
 model Project {
-  id              Int      @id @default(autoincrement())
+  id              Int       @id @default(autoincrement())
   projectType     String
   startDate       DateTime
   endDate         DateTime
-  projectManagerP Employee @relation(fields: [projectManager], references: [id])
-  projectManager  Int
+  projectManagerP Employee? @relation(fields: [projectManager], references: [id])
+  projectManager  Int?
   comment         String
   status          String
-  employeeId      Int
 }
