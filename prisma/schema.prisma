@@ -60,3 +60,10 @@ model Project {
   comment         String
   status          String
 }
+
+model User {
+  id       Int    @id @default(autoincrement())
+  login    String
+  password String
+  roles    String
+}

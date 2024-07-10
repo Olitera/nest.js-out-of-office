@@ -8,7 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApprovalRequestService } from './approval-request.service';
-import { ApprovalRequest  } from '@prisma/client';
+import { ApprovalRequest } from '@prisma/client';
 
 @Controller('approvalrequests')
 export class ApprovalRequestController {
@@ -30,7 +30,10 @@ export class ApprovalRequestController {
   }
 
   @Put(':id')
-  updateApprovalRequest(@Param('id') id: number, @Body() data: ApprovalRequest) {
+  updateApprovalRequest(
+    @Param('id') id: number,
+    @Body() data: ApprovalRequest,
+  ) {
     return this.employeeService.updateApprovalRequest(+id, data);
   }
 

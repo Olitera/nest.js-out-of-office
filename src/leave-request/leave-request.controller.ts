@@ -8,7 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { LeaveRequestService } from './leave-request.service';
-import { LeaveRequest  } from '@prisma/client';
+import { LeaveRequest } from '@prisma/client';
 
 @Controller('leaverequests')
 export class LeaveRequestController {
