@@ -7,12 +7,6 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-// todo: doesn't supported by sqlite but supported by postgresql
-// enum EmployeeStatus {
-//   Active
-//   Inactive
-// }
-
 model Employee {
   id                 Int               @id @default(autoincrement())
   fullname           String
