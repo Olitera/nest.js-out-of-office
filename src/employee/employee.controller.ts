@@ -5,7 +5,7 @@ import {
   Get,
   Param,
   Post,
-  Put,
+  Put, Query,
   SetMetadata,
   UseGuards,
 } from '@nestjs/common';
@@ -26,14 +26,12 @@ export class EmployeeController {
 
   @Get()
   @SetMetadata('roles', ['HR_MANAGER', 'PROJECT_MANAGER', 'ADMIN'])
-  getAllEmployees() {
-    return this.employeeService.getAllEmployees();
-  }
-
-  @Get(':fullname-asc')
-  @SetMetadata('roles', ['HR_MANAGER', 'PROJECT_MANAGER', 'ADMIN'])
-  getAllEmployeesFullnameAsc() {
-    return this.employeeService.getAllEmployessFullnameAsc();
+  getAllEmployees(
+    @Query('sortColumn') sortColumn?: string,
+    @Query('sortOrder') sortOrder?: ('asc' | 'desc'),
+    @Query('filter') filter?: string[]
+  ) {
+    return this.employeeService.getAllEmployees({ sortColumn, sortOrder, filter });
   }
 
   @Get(':id')

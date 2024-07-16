@@ -9,14 +9,34 @@ export class EmployeeService {
   createEmployee(data: Employee) {
     return this.prisma.employee.create({ data });
   }
-  getAllEmployees() {
-    return this.prisma.employee.findMany();
+
+  getAllEmployees(args?: {
+    sortColumn?: string,
+    sortOrder?: 'asc' | 'desc',
+    filter?: string[]
+  }) {
+    return this.prisma.employee.findMany({
+        orderBy: [
+          { [args?.sortColumn ?? 'fullname']: args?.sortOrder ?? 'asc' },
+        ],
+        select: {
+          fullname: args?.filter?.includes('fullname'),
+          subdivision: args?.filter?.includes('subdivision'),
+          status: args?.filter?.includes('status'),
+          position: args?.filter?.includes('position'),
+          peoplePartner: args?.filter?.includes('peoplePartner'),
+          outOfOfficeBalance: args?.filter?.includes('outOfOfficeBalance'),
+        }
+      }
+    );
   }
 
-  getAllEmployessFullnameAsc() {
-    return this.prisma.employee.findMany({orderBy: [
-      {fullname: 'asc'},
-      ] });
+  getAllEmployeesFilter() {
+    return this.prisma.employee.findMany({
+      where: {
+        status: 'active',
+      }
+    });
   }
 
   getEmployeeById(id: number) {
@@ -33,6 +53,7 @@ export class EmployeeService {
       data: { status: 'inactive' },
     });
   }
+
   deleteEmployee(id: number) {
     return this.prisma.employee.delete({ where: { id } });
   }
