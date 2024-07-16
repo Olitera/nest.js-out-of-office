@@ -47,10 +47,11 @@ export class EmployeeController {
     return this.employeeService.updateEmployee(+id, data);
   }
 
-  @Put(':id/deactivate')
+  @Put(':id/employee-status')
   @SetMetadata('roles', ['HR_MANAGER', 'ADMIN'])
-  deactivateEmployee(@Param('id') id: number) {
-    return this.employeeService.deactivateEmployee(+id);
+  changeEmployeeStatus(@Param('id') id: number,
+  @Query('status') status: string) {
+    return this.employeeService.changeStatusEmployee(+id, status);
   }
 
   @Delete(':id')

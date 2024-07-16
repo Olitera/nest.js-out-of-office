@@ -21,6 +21,7 @@ export class EmployeeService {
           { [args?.sortColumn ?? 'fullname']: args?.sortOrder ?? 'asc' },
         ],
         select: {
+          id: true,
           fullname: args?.filter?.includes('fullname'),
           subdivision: args?.filter?.includes('subdivision'),
           status: args?.filter?.includes('status'),
@@ -53,10 +54,12 @@ export class EmployeeService {
     return this.prisma.employee.update({ where: { id }, data });
   }
 
-  deactivateEmployee(id: number) {
+  async changeStatusEmployee(id: number, estatus: string) {
+    console.log(await this.prisma.employee.findUnique({ where: { id } }));
+    const status = estatus === 'inactive' ? 'inactive' : 'active';
     return this.prisma.employee.update({
       where: { id },
-      data: { status: 'inactive' },
+      data: { status },
     });
   }
 
