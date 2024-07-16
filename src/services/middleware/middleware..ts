@@ -8,7 +8,7 @@ export class RoleMiddleware implements NestMiddleware {
 
   async use(req: any, res: any, next: () => void) {
     req.user = {
-      roles: 'HR_MANAGER', // This should be dynamically set based on actual user roles
+      roles: 'HR_MANAGER',
     };
     const authHeader = req.headers.authorization;
     if (authHeader) {

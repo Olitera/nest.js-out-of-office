@@ -31,7 +31,7 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(RoleMiddleware)
-      // .exclude('/auth/signup', '/auth/login', '/auth/refresh', '/doc', '/')
+      .exclude('/auth/signup', '/auth/login', '/auth/signup/hr', '/doc', '/')
       .forRoutes('*');
   }
 }
