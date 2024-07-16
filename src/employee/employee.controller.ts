@@ -29,9 +29,10 @@ export class EmployeeController {
   getAllEmployees(
     @Query('sortColumn') sortColumn?: string,
     @Query('sortOrder') sortOrder?: ('asc' | 'desc'),
-    @Query('filter') filter?: string[]
+    @Query('filter') filter?: string[],
+    @Query('search') search?: string
   ) {
-    return this.employeeService.getAllEmployees({ sortColumn, sortOrder, filter });
+    return this.employeeService.getAllEmployees({ sortColumn, sortOrder, filter, search });
   }
 
   @Get(':id')

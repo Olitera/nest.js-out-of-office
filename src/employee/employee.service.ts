@@ -13,7 +13,8 @@ export class EmployeeService {
   getAllEmployees(args?: {
     sortColumn?: string,
     sortOrder?: 'asc' | 'desc',
-    filter?: string[]
+    filter?: string[],
+    search?: string
   }) {
     return this.prisma.employee.findMany({
         orderBy: [
@@ -26,6 +27,11 @@ export class EmployeeService {
           position: args?.filter?.includes('position'),
           peoplePartner: args?.filter?.includes('peoplePartner'),
           outOfOfficeBalance: args?.filter?.includes('outOfOfficeBalance'),
+        },
+      where: {
+        fullname: {
+          contains: args?.search,
+        }
         }
       }
     );
