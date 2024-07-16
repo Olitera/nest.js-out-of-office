@@ -24,16 +24,51 @@ export class AuthController {
   }
 
   @Post('signup')
-  async signup(@Body() data: { login: string; password: string; roles: string }, @Res() res) {
+  async signup(
+    @Body() data: { login: string; password: string; roles: string },
+    @Res() res,
+  ) {
     const user = await this.usersService.createUser(data);
     res.status(200).send(user);
   }
 
   @Post('signup/hr')
-  async signupHr(@Body() data: { login: string; password: string }, @Res() res) {
+  async signupHr(
+    @Body() data: { login: string; password: string },
+    @Res() res,
+  ) {
     const roles = 'HR_MANAGER';
     const user = await this.usersService.createUser({ ...data, roles });
     res.status(200).send(user);
   }
 
+  @Post('signup/manager')
+  async signupManager(
+    @Body() data: { login: string; password: string },
+    @Res() res,
+  ) {
+    const roles = 'MANAGER';
+    const user = await this.usersService.createUser({ ...data, roles });
+    res.status(200).send(user);
+  }
+
+  @Post('signup/employee')
+  async signupEmployee(
+    @Body() data: { login: string; password: string },
+    @Res() res,
+  ) {
+    const roles = 'EMPLOYEE';
+    const user = await this.usersService.createUser({ ...data, roles });
+    res.status(200).send(user);
+  }
+
+  @Post('signup/admin')
+  async signupAdmin(
+    @Body() data: { login: string; password: string },
+    @Res() res,
+  ) {
+    const roles = 'ADMIN';
+    const user = await this.usersService.createUser({ ...data, roles });
+    res.status(200).send(user);
+  }
 }

@@ -22,10 +22,15 @@ import { PrismaService } from './services/prisma/prisma.service';
     UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService, Reflector,{
-    provide: APP_GUARD,
-    useClass: RolesGuard,
-  }],
+  providers: [
+    AppService,
+    PrismaService,
+    Reflector,
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
