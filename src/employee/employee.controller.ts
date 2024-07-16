@@ -5,7 +5,8 @@ import {
   Get,
   Param,
   Post,
-  Put, Query,
+  Put,
+  Query,
   SetMetadata,
   UseGuards,
 } from '@nestjs/common';
@@ -28,11 +29,16 @@ export class EmployeeController {
   @SetMetadata('roles', ['HR_MANAGER', 'PROJECT_MANAGER', 'ADMIN'])
   getAllEmployees(
     @Query('sortColumn') sortColumn?: string,
-    @Query('sortOrder') sortOrder?: ('asc' | 'desc'),
+    @Query('sortOrder') sortOrder?: 'asc' | 'desc',
     @Query('filter') filter?: string[],
-    @Query('search') search?: string
+    @Query('search') search?: string,
   ) {
-    return this.employeeService.getAllEmployees({ sortColumn, sortOrder, filter, search });
+    return this.employeeService.getAllEmployees({
+      sortColumn,
+      sortOrder,
+      filter,
+      search,
+    });
   }
 
   @Get(':id')
@@ -49,14 +55,19 @@ export class EmployeeController {
 
   @Put(':id/employee-status')
   @SetMetadata('roles', ['HR_MANAGER', 'ADMIN'])
-  changeEmployeeStatus(@Param('id') id: number,
-  @Query('status') status: string) {
+  changeEmployeeStatus(
+    @Param('id') id: number,
+    @Query('status') status: string,
+  ) {
     return this.employeeService.changeStatusEmployee(+id, status);
   }
 
   @Put(':id/assign-to-project')
   @SetMetadata('roles', ['PROJECT_MANAGER', 'ADMIN'])
-  assignEmployeeToProject(@Param('id') id: number, @Body() projectId: { id: number }) {
+  assignEmployeeToProject(
+    @Param('id') id: number,
+    @Body() projectId: { id: number },
+  ) {
     return this.employeeService.assignEmployeeToProject(+id, projectId.id);
   }
 

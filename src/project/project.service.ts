@@ -9,8 +9,24 @@ export class ProjectService {
   createProject(data: Project) {
     return this.prisma.project.create({ data });
   }
-  getAllProjects() {
-    return this.prisma.project.findMany();
+  getAllProjects(args?: {
+    sortColumn?: string;
+    sortOrder?: 'asc' | 'desc';
+    filter?: string[];
+    search?: string;
+  }) {
+    return this.prisma.project.findMany({
+      orderBy: [{ [args?.sortColumn ?? 'id']: args?.sortOrder ?? 'asc' }],
+      select: {
+        id: true,
+        projectType: args?.filter?.includes('projectType'),
+        startDate: args?.filter?.includes('startDate'),
+        endDate: args?.filter?.includes('endDate'),
+        projectManager: args?.filter?.includes('projectManager'),
+        comment: args?.filter?.includes('comment'),
+        status: args?.filter?.includes('status'),
+      },
+    });
   }
 
   getProjectById(id: number) {
@@ -19,6 +35,14 @@ export class ProjectService {
 
   updateProject(id: number, data: Project) {
     return this.prisma.project.update({ where: { id }, data });
+  }
+
+  changeStatusProject(id: number, estatus: string) {
+    const status = estatus === 'inactive' ? 'inactive' : 'active';
+    return this.prisma.project.update({
+      where: { id },
+      data: { status },
+    });
   }
   deleteProject(id: number) {
     return this.prisma.project.delete({ where: { id } });

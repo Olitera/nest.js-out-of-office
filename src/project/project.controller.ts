@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   SetMetadata,
   UseGuards,
 } from '@nestjs/common';
@@ -26,8 +27,18 @@ export class ProjectController {
 
   @Get()
   @SetMetadata('roles', ['PROJECT_MANAGER', 'HR_MANAGER', 'ADMIN'])
-  getAllProjects() {
-    return this.projectService.getAllProjects();
+  getAllProjects(
+    @Query('sortColumn') sortColumn?: string,
+    @Query('sortOrder') sortOrder?: 'asc' | 'desc',
+    @Query('filter') filter?: string[],
+    @Query('search') search?: string,
+  ) {
+    return this.projectService.getAllProjects({
+      sortColumn,
+      sortOrder,
+      filter,
+      search,
+    });
   }
 
   @Get(':id')
@@ -40,6 +51,15 @@ export class ProjectController {
   @SetMetadata('roles', ['PROJECT_MANAGER', 'ADMIN'])
   updateProject(@Param('id') id: number, @Body() data: Project) {
     return this.projectService.updateProject(+id, data);
+  }
+
+  @Put(':id/project-status')
+  @SetMetadata('roles', ['PROJECT_MANAGER', 'ADMIN'])
+  updateProjectStatus(
+    @Param('id') id: number,
+    @Query('status') status: string,
+  ) {
+    return this.projectService.changeStatusProject(+id, status);
   }
 
   @Delete(':id')

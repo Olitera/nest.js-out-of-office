@@ -11,31 +11,28 @@ export class EmployeeService {
   }
 
   getAllEmployees(args?: {
-    sortColumn?: string,
-    sortOrder?: 'asc' | 'desc',
-    filter?: string[],
-    search?: string
+    sortColumn?: string;
+    sortOrder?: 'asc' | 'desc';
+    filter?: string[];
+    search?: string;
   }) {
     return this.prisma.employee.findMany({
-        orderBy: [
-          { [args?.sortColumn ?? 'fullname']: args?.sortOrder ?? 'asc' },
-        ],
-        select: {
-          id: true,
-          fullname: args?.filter?.includes('fullname'),
-          subdivision: args?.filter?.includes('subdivision'),
-          status: args?.filter?.includes('status'),
-          position: args?.filter?.includes('position'),
-          peoplePartner: args?.filter?.includes('peoplePartner'),
-          outOfOfficeBalance: args?.filter?.includes('outOfOfficeBalance'),
-        },
+      orderBy: [{ [args?.sortColumn ?? 'fullname']: args?.sortOrder ?? 'asc' }],
+      select: {
+        id: true,
+        fullname: args?.filter?.includes('fullname'),
+        subdivision: args?.filter?.includes('subdivision'),
+        status: args?.filter?.includes('status'),
+        position: args?.filter?.includes('position'),
+        peoplePartner: args?.filter?.includes('peoplePartner'),
+        outOfOfficeBalance: args?.filter?.includes('outOfOfficeBalance'),
+      },
       where: {
         fullname: {
           contains: args?.search,
-        }
-        }
-      }
-    );
+        },
+      },
+    });
   }
 
   getEmployeeById(id: number) {
@@ -54,7 +51,7 @@ export class EmployeeService {
     });
   }
 
-  assignEmployeeToProject(employeeId: number, projectId: number){
+  assignEmployeeToProject(employeeId: number, projectId: number) {
     return this.prisma.employee.update({
       where: { id: employeeId },
       data: {
@@ -64,7 +61,7 @@ export class EmployeeService {
       },
       include: {
         Project: true,
-      }
+      },
     });
   }
 
