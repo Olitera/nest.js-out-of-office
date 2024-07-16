@@ -5,7 +5,7 @@ import {
   Get,
   Param,
   Post,
-  Put,
+  Put, Query,
   SetMetadata,
   UseGuards,
 } from '@nestjs/common';
@@ -26,8 +26,13 @@ export class LeaveRequestController {
 
   @Get()
   @SetMetadata('roles', ['EMPLOYEE', 'HR_MANAGER', 'PROJECT_MANAGER', 'ADMIN'])
-  getAllLeaveRequests() {
-    return this.employeeService.getAllLeaveRequests();
+  getAllLeaveRequests(
+    @Query('sortColumn') sortColumn?: string,
+    @Query('sortOrder') sortOrder?: ('asc' | 'desc'),
+    @Query('filter') filter?: string[],
+    @Query('search') search?: number
+  ) {
+    return this.employeeService.getAllLeaveRequests({ sortColumn, sortOrder, filter, search });
   }
 
   @Get(':id')

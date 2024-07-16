@@ -9,8 +9,29 @@ export class LeaveRequestService {
   createLeaveRequest(data: LeaveRequest) {
     return this.prisma.leaveRequest.create({ data });
   }
-  getAllLeaveRequests() {
-    return this.prisma.leaveRequest.findMany();
+  getAllLeaveRequests(args? :{
+                        sortColumn?: string,
+                        sortOrder?: 'asc' | 'desc',
+                        filter?: string[],
+                        search?: number,
+                      }) {
+    return this.prisma.leaveRequest.findMany(
+      {
+        orderBy: [
+          { [args?.sortColumn ?? 'id']: args?.sortOrder ?? 'asc' },
+        ],
+        select: {
+          id: true,
+          employee: args?.filter?.includes('employee'),
+          startDate: args?.filter?.includes('startDate'),
+          endDate: args?.filter?.includes('endDate'),
+          absenceReason: args?.filter?.includes('absenceReason'),
+          comment: args?.filter?.includes('comment'),
+          status: args?.filter?.includes('status'),
+        }
+      }
+
+    );
   }
 
   getLeaveRequestById(id: number) {
