@@ -38,14 +38,6 @@ export class EmployeeService {
     );
   }
 
-  getAllEmployeesFilter() {
-    return this.prisma.employee.findMany({
-      where: {
-        status: 'active',
-      }
-    });
-  }
-
   getEmployeeById(id: number) {
     return this.prisma.employee.findUnique({ where: { id } });
   }
@@ -54,12 +46,25 @@ export class EmployeeService {
     return this.prisma.employee.update({ where: { id }, data });
   }
 
-  async changeStatusEmployee(id: number, estatus: string) {
-    console.log(await this.prisma.employee.findUnique({ where: { id } }));
+  changeStatusEmployee(id: number, estatus: string) {
     const status = estatus === 'inactive' ? 'inactive' : 'active';
     return this.prisma.employee.update({
       where: { id },
       data: { status },
+    });
+  }
+
+  assignEmployeeToProject(employeeId: number, projectId: number){
+    return this.prisma.employee.update({
+      where: { id: employeeId },
+      data: {
+        Project: {
+          connect: { id: projectId },
+        },
+      },
+      include: {
+        Project: true,
+      }
     });
   }
 

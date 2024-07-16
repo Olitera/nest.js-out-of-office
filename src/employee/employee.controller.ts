@@ -54,6 +54,13 @@ export class EmployeeController {
     return this.employeeService.changeStatusEmployee(+id, status);
   }
 
+  @Put(':id/assign-to-project')
+  @SetMetadata('roles', ['PROJECT_MANAGER', 'ADMIN'])
+  assignEmployeeToProject(@Param('id') id: number, @Body() projectId: { id: number }) {
+    console.log(projectId, 'projectId');
+    return this.employeeService.assignEmployeeToProject(+id, projectId.id);
+  }
+
   @Delete(':id')
   @SetMetadata('roles', ['ADMIN'])
   deleteEmployee(@Param('id') id: number) {

@@ -47,7 +47,7 @@ export class AuthController {
     @Body() data: { login: string; password: string },
     @Res() res,
   ) {
-    const roles = 'MANAGER';
+    const roles = 'PROJECT_MANAGER';
     const user = await this.usersService.createUser({ ...data, roles });
     res.status(200).send(user);
   }

@@ -14,9 +14,9 @@ export class RoleMiddleware implements NestMiddleware {
   ) {}
 
   async use(req: any, res: any, next: () => void) {
-    req.user = {
-      roles: 'HR_MANAGER',
-    };
+    // req.user = {
+    //   roles: 'PROJECT_MANAGER',
+    // };
     const authHeader = req.headers.authorization;
     if (authHeader) {
       const token = authHeader.split(' ')[1];
