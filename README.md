@@ -133,7 +133,29 @@ The project is divided into several modules:
    - Update Leave request: `PUT /leaverequests/:id`
    - Delete Leave request: `DELETE /leaverequests/:id`
 
+### Approval requests
+
+   - Create Approval request: `POST /approvalrequests`
+   - Get All Approval requests: `GET /approvalrequests`
+
+     Query Params:
+       - sortColumn (optional): column to sort by.
+       - sortOrder (optional): sort order (asc or desc).
+       - filter (optional): array of fields to include in the response.
+       - search (optional): search string.
+
+   - Sort table rows using sorting in the column headers, for example sort by status in desc order : `GET /approvalrequests?
+     sortColumn=status&sortOrder=desc`
+   - Filter for table rows, for example by such as approver and leaveRequests: `GET /approvalrequests?filter=approver,leaveRequest`
+
+
+
+   - Get Approval request by ID, open a approval request: `GET /approvalrequests/:id`
+   - Update Approval request: `PUT /approvalrequests/:id`
+   - Delete Approval request: `DELETE /approvalrequests/:id`
+
 ### Projects
+
 - Create Project: `POST /projects`
 - Get All Projects: `GET /projects`
 

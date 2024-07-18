@@ -5,7 +5,7 @@ import {
   Get,
   Param,
   Post,
-  Put,
+  Put, Query,
   SetMetadata,
   UseGuards,
 } from '@nestjs/common';
@@ -26,8 +26,16 @@ export class ApprovalRequestController {
 
   @Get()
   @SetMetadata('roles', ['HR_MANAGER', 'PROJECT_MANAGER', 'ADMIN'])
-  getAllApprovalRequests() {
-    return this.employeeService.getAllApprovalRequests();
+  getAllApprovalRequests(
+    @Query('sortColumn') sortColumn?: string,
+    @Query('sortOrder') sortOrder?: 'asc' | 'desc',
+    @Query('filter') filter?: string[],
+    @Query('search') search?: number,
+  ) {
+    return this.employeeService.getAllApprovalRequests({sortColumn,
+      sortOrder,
+      filter,
+      search});
   }
 
   @Get(':id')
@@ -43,6 +51,16 @@ export class ApprovalRequestController {
     @Body() data: ApprovalRequest,
   ) {
     return this.employeeService.updateApprovalRequest(+id, data);
+  }
+
+  @Put(':id')
+  @SetMetadata('roles', ['HR_MANAGER', 'ADMIN'])
+  approveRequest(
+    @Param('id') id: number,
+    @Body() leaveRequestId: { id: number },
+    @Body() employeeId: { id: number },
+  ) {
+    return this.employeeService.approveRequest(+id, leaveRequestId, employeeId);
   }
 
   @Delete(':id')

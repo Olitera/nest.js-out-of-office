@@ -39,6 +39,12 @@ export class LeaveRequestService {
   updateLeaveRequest(id: number, data: LeaveRequest) {
     return this.prisma.leaveRequest.update({ where: { id }, data });
   }
+
+  approveLeaveRequest(id: number) {
+    return this.prisma.leaveRequest.update({  where: { id },
+      data: { status: 'approved' }});
+  }
+
   deleteLeaveRequest(id: number) {
     return this.prisma.leaveRequest.delete({ where: { id } });
   }
