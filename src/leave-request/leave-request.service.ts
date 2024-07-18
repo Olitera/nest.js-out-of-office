@@ -26,6 +26,9 @@ export class LeaveRequestService {
         comment: args?.filter?.includes('comment'),
         status: args?.filter?.includes('status'),
       },
+      where: {
+        id: args?.search,
+      },
     });
   }
 
