@@ -6,9 +6,25 @@ import { LeaveRequest } from '@prisma/client';
 export class LeaveRequestService {
   constructor(private readonly prisma: PrismaService) {}
 
-  createLeaveRequest(data: LeaveRequest) {
-    return this.prisma.leaveRequest.create({ data });
+  createLeaveRequest(data: LeaveRequest & {employee: number}) {
+    return this.prisma.employee.update({
+      where: { id: data.employee },
+      data: {
+        LeaveRequest: {
+          create: {
+            startDate: data.startDate,
+            endDate: data.endDate,
+            absenceReason: data.absenceReason,
+            comment: data.comment,
+            status: 'new' },
+        },
+      },
+      select: {
+        LeaveRequest: true,
+      }
+    });
   }
+
   getAllLeaveRequests(args?: {
     sortColumn?: string;
     sortOrder?: 'asc' | 'desc';
@@ -40,9 +56,23 @@ export class LeaveRequestService {
     return this.prisma.leaveRequest.update({ where: { id }, data });
   }
 
+  async submitLeaveRequest(id: number, data: LeaveRequest &  { approverId: number }) {
+    const res = await this.prisma.leaveRequest.update({
+      where: { id },
+      data: { ...data, status: 'submitted' }
+    });
+    await this.prisma.approvalRequest.create({ data: {
+      approver: data.approverId, leaveRequest: res.id, status: 'new', comment: res.comment } });
+    return res
+  }
+
+
+
   approveLeaveRequest(id: number) {
-    return this.prisma.leaveRequest.update({  where: { id },
-      data: { status: 'approved' }});
+    return this.prisma.leaveRequest.update({
+      where: { id },
+      data: { status: 'approved' }
+    });
   }
 
   deleteLeaveRequest(id: number) {

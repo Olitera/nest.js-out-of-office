@@ -46,6 +46,10 @@ export class ApprovalRequestService {
     return this.prisma.approvalRequest.update({
       where: { id },
       data: { status: 'approved' },
+      include: {
+        leaveRequestAR: true,
+        approverAR: true,
+      },
     })
       .then(() => {
         this.leaveRequestService.approveLeaveRequest(leaveRequest.id)

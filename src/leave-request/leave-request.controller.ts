@@ -17,12 +17,12 @@ import { RolesGuard } from '../services/guards/roles.guard';
 @Controller('leaverequests')
 @UseGuards(RolesGuard)
 export class LeaveRequestController {
-  constructor(private readonly employeeService: LeaveRequestService) {}
+  constructor(private readonly leaveRequestService: LeaveRequestService) {}
 
   @Post()
   @SetMetadata('roles', ['EMPLOYEE', 'ADMIN'])
-  createLeaveRequest(@Body() data: LeaveRequest) {
-    return this.employeeService.createLeaveRequest(data);
+  createLeaveRequest(@Body() data: LeaveRequest & { employee: number }) {
+    return this.leaveRequestService.createLeaveRequest(data);
   }
 
   @Get()
@@ -33,7 +33,7 @@ export class LeaveRequestController {
     @Query('filter') filter?: string[],
     @Query('search') search?: number,
   ) {
-    return this.employeeService.getAllLeaveRequests({
+    return this.leaveRequestService.getAllLeaveRequests({
       sortColumn,
       sortOrder,
       filter,
@@ -44,18 +44,25 @@ export class LeaveRequestController {
   @Get(':id')
   @SetMetadata('roles', ['EMPLOYEE', 'HR_MANAGER', 'PROJECT_MANAGER', 'ADMIN'])
   getLeaveRequestById(@Param('id') id: number) {
-    return this.employeeService.getLeaveRequestById(+id);
+    return this.leaveRequestService.getLeaveRequestById(+id);
   }
 
   @Put(':id')
   @SetMetadata('roles', ['EMPLOYEE', 'ADMIN'])
   updateLeaveRequest(@Param('id') id: number, @Body() data: LeaveRequest) {
-    return this.employeeService.updateLeaveRequest(+id, data);
+    return this.leaveRequestService.updateLeaveRequest(+id, data);
+  }
+
+  @Put(':id/submit')
+  @SetMetadata('roles', ['EMPLOYEE','ADMIN'])
+  submitLeaveRequest(@Param('id') id: number,
+                     @Body() data: LeaveRequest & { approverId: number }) {
+    return this.leaveRequestService.submitLeaveRequest(+id, data );
   }
 
   @Delete(':id')
   @SetMetadata('roles', ['ADMIN'])
   deleteLeaveRequest(@Param('id') id: number) {
-    return this.employeeService.deleteLeaveRequest(+id);
+    return this.leaveRequestService.deleteLeaveRequest(+id);
   }
 }

@@ -16,12 +16,12 @@ import { RolesGuard } from '../services/guards/roles.guard';
 @Controller('approvalrequests')
 @UseGuards(RolesGuard)
 export class ApprovalRequestController {
-  constructor(private readonly employeeService: ApprovalRequestService) {}
+  constructor(private readonly approvalRequestService: ApprovalRequestService) {}
 
   @Post()
-  @SetMetadata('roles', ['EMPLOYEE', 'ADMIN'])
+  @SetMetadata('roles', ['ADMIN'])
   createApprovalRequest(@Body() data: ApprovalRequest) {
-    return this.employeeService.createApprovalRequest(data);
+    return this.approvalRequestService.createApprovalRequest(data);
   }
 
   @Get()
@@ -32,7 +32,7 @@ export class ApprovalRequestController {
     @Query('filter') filter?: string[],
     @Query('search') search?: number,
   ) {
-    return this.employeeService.getAllApprovalRequests({sortColumn,
+    return this.approvalRequestService.getAllApprovalRequests({sortColumn,
       sortOrder,
       filter,
       search});
@@ -41,7 +41,7 @@ export class ApprovalRequestController {
   @Get(':id')
   @SetMetadata('roles', ['HR_MANAGER', 'PROJECT_MANAGER', 'ADMIN'])
   getApprovalRequestById(@Param('id') id: number) {
-    return this.employeeService.getApprovalRequestById(+id);
+    return this.approvalRequestService.getApprovalRequestById(+id);
   }
 
   @Put(':id')
@@ -50,22 +50,22 @@ export class ApprovalRequestController {
     @Param('id') id: number,
     @Body() data: ApprovalRequest,
   ) {
-    return this.employeeService.updateApprovalRequest(+id, data);
+    return this.approvalRequestService.updateApprovalRequest(+id, data);
   }
 
-  @Put(':id')
+  @Put(':id/approve-request')
   @SetMetadata('roles', ['HR_MANAGER', 'ADMIN'])
   approveRequest(
     @Param('id') id: number,
     @Body() leaveRequestId: { id: number },
     @Body() employeeId: { id: number },
   ) {
-    return this.employeeService.approveRequest(+id, leaveRequestId, employeeId);
+    return this.approvalRequestService.approveRequest(+id, leaveRequestId, employeeId);
   }
 
   @Delete(':id')
   @SetMetadata('roles', ['ADMIN'])
   deleteApprovalRequest(@Param('id') id: number) {
-    return this.employeeService.deleteApprovalRequest(+id);
+    return this.approvalRequestService.deleteApprovalRequest(+id);
   }
 }
