@@ -23,14 +23,14 @@ export class AuthController {
     res.status(200).send({ accessToken, refreshToken });
   }
 
-  @Post('signup')
-  async signup(
-    @Body() data: { login: string; password: string; roles: string },
-    @Res() res,
-  ) {
-    const user = await this.usersService.createUser(data);
-    res.status(200).send(user);
-  }
+  // @Post('signup')
+  // async signup(
+  //   @Body() data: { login: string; password: string; roles: string },
+  //   @Res() res,
+  // ) {
+  //   const user = await this.usersService.createUser(data);
+  //   res.status(200).send(user);
+  // }
 
   @Post('signup/hr')
   async signupHr(
@@ -38,8 +38,17 @@ export class AuthController {
     @Res() res,
   ) {
     const roles = 'HR_MANAGER';
-    const user = await this.usersService.createUser({ ...data, roles });
-    res.status(200).send(user);
+    try {
+      const user = await this.usersService.createUser({ ...data, roles });
+      res.status(200).send(user);
+    } catch (e) {
+      if (/Unique/.test(e.message)) {
+        res
+          .status(403)
+          .send({ message: 'User already exists', statusCode: 403 });
+      }
+      throw Error(e.message);
+    }
   }
 
   @Post('signup/manager')

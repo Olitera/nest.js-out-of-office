@@ -6,9 +6,11 @@ import { EmployeeService } from '../employee/employee.service';
 
 @Injectable()
 export class ApprovalRequestService {
-  constructor(private readonly prisma: PrismaService,
-              private leaveRequestService: LeaveRequestService,
-              private employeeService: EmployeeService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private leaveRequestService: LeaveRequestService,
+    private employeeService: EmployeeService,
+  ) {}
 
   createApprovalRequest(data: ApprovalRequest) {
     return this.prisma.approvalRequest.create({ data });
@@ -42,18 +44,24 @@ export class ApprovalRequestService {
     return this.prisma.approvalRequest.update({ where: { id }, data });
   }
 
-  async approveRequest(id: number, leaveRequest: { id: number }, employee: { id: number }) {
-    return this.prisma.approvalRequest.update({
-      where: { id },
-      data: { status: 'approved' },
-      include: {
-        leaveRequestAR: true,
-        approverAR: true,
-      },
-    })
+  async approveRequest(
+    id: number,
+    leaveRequest: { id: number },
+    employee: { id: number },
+  ) {
+    return this.prisma.approvalRequest
+      .update({
+        where: { id },
+        data: { status: 'approved' },
+        include: {
+          leaveRequestAR: true,
+          approverAR: true,
+        },
+      })
       .then(() => {
-        this.leaveRequestService.approveLeaveRequest(leaveRequest.id)
-        this.employeeService.recalculateAbsenceBalance(employee.id)})
+        this.leaveRequestService.approveLeaveRequest(leaveRequest.id);
+        this.employeeService.recalculateAbsenceBalance(employee.id);
+      });
   }
   deleteApprovalRequest(id: number) {
     return this.prisma.approvalRequest.delete({ where: { id } });

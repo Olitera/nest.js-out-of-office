@@ -54,10 +54,12 @@ export class LeaveRequestController {
   }
 
   @Put(':id/submit')
-  @SetMetadata('roles', ['EMPLOYEE','ADMIN'])
-  submitLeaveRequest(@Param('id') id: number,
-                     @Body() data: LeaveRequest & { approverId: number }) {
-    return this.leaveRequestService.submitLeaveRequest(+id, data );
+  @SetMetadata('roles', ['EMPLOYEE', 'ADMIN'])
+  submitLeaveRequest(
+    @Param('id') id: number,
+    @Body() data: LeaveRequest & { approverId: number },
+  ) {
+    return this.leaveRequestService.submitLeaveRequest(+id, data);
   }
 
   @Delete(':id')

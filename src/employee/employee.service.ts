@@ -65,8 +65,6 @@ export class EmployeeService {
     });
   }
 
-
-
   recalculateAbsenceBalance(id: number) {
     return this.prisma.employee.update({
       where: { id },
@@ -77,7 +75,6 @@ export class EmployeeService {
       },
     });
   }
-
 
   deleteEmployee(id: number) {
     return this.prisma.employee.delete({ where: { id } });

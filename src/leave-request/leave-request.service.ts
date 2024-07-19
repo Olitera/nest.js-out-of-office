@@ -6,7 +6,7 @@ import { LeaveRequest } from '@prisma/client';
 export class LeaveRequestService {
   constructor(private readonly prisma: PrismaService) {}
 
-  createLeaveRequest(data: LeaveRequest & {employee: number}) {
+  createLeaveRequest(data: LeaveRequest & { employee: number }) {
     return this.prisma.employee.update({
       where: { id: data.employee },
       data: {
@@ -16,12 +16,13 @@ export class LeaveRequestService {
             endDate: data.endDate,
             absenceReason: data.absenceReason,
             comment: data.comment,
-            status: 'new' },
+            status: 'new',
+          },
         },
       },
       select: {
         LeaveRequest: true,
-      }
+      },
     });
   }
 
@@ -56,22 +57,48 @@ export class LeaveRequestService {
     return this.prisma.leaveRequest.update({ where: { id }, data });
   }
 
-  async submitLeaveRequest(id: number, data: LeaveRequest &  { approverId: number }) {
-    const res = await this.prisma.leaveRequest.update({
+  submitLeaveRequest(id: number, data: LeaveRequest & { approverId: number }) {
+    return this.prisma.leaveRequest.update({
       where: { id },
-      data: { ...data, status: 'submitted' }
+      data: {
+        startDate: data.startDate,
+        endDate: data.endDate,
+        absenceReason: data.absenceReason,
+        comment: data.comment,
+        status: 'submitted',
+        ApprovalRequest: {
+          create: {
+            approver: data.approverId,
+            comment: data.comment,
+            status: 'new',
+          },
+        },
+      },
     });
-    await this.prisma.approvalRequest.create({ data: {
-      approver: data.approverId, leaveRequest: res.id, status: 'new', comment: res.comment } });
-    return res
   }
 
-
+  async cancelLeaveRequest(id: number) {
+    await this.prisma.approvalRequest.deleteMany({
+      where: { leaveRequest: id },
+    });
+    this.prisma.approvalRequest
+      .findFirst({ where: { leaveRequest: id } })
+      .then(({ id }) => this.prisma.approvalRequest.delete({ where: { id } }));
+    return this.prisma.leaveRequest.update({
+      where: { id },
+      data: {
+        status: 'cancelled',
+        ApprovalRequest: {
+          deleteMany: {},
+        },
+      },
+    });
+  }
 
   approveLeaveRequest(id: number) {
     return this.prisma.leaveRequest.update({
       where: { id },
-      data: { status: 'approved' }
+      data: { status: 'approved' },
     });
   }
 

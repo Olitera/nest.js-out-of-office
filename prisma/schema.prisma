@@ -35,13 +35,13 @@ model LeaveRequest {
 }
 
 model ApprovalRequest {
-  id             Int           @id @default(autoincrement())
-  approverAR     Employee?     @relation(fields: [approver], references: [id])
-  approver       Int?
-  leaveRequestAR LeaveRequest? @relation(fields: [leaveRequest], references: [id])
-  leaveRequest   Int?
+  id             Int          @id @default(autoincrement())
+  approverAR     Employee     @relation(fields: [approver], references: [id])
+  approver       Int
+  leaveRequestAR LeaveRequest @relation(fields: [leaveRequest], references: [id])
+  leaveRequest   Int
   status         String
-  comment        String
+  comment        String?
 }
 
 model Project {
@@ -57,7 +57,7 @@ model Project {
 
 model User {
   id       Int    @id @default(autoincrement())
-  login    String
+  login    String @unique
   password String
   roles    String
 }

@@ -5,7 +5,8 @@ import {
   Get,
   Param,
   Post,
-  Put, Query,
+  Put,
+  Query,
   SetMetadata,
   UseGuards,
 } from '@nestjs/common';
@@ -16,7 +17,9 @@ import { RolesGuard } from '../services/guards/roles.guard';
 @Controller('approvalrequests')
 @UseGuards(RolesGuard)
 export class ApprovalRequestController {
-  constructor(private readonly approvalRequestService: ApprovalRequestService) {}
+  constructor(
+    private readonly approvalRequestService: ApprovalRequestService,
+  ) {}
 
   @Post()
   @SetMetadata('roles', ['ADMIN'])
@@ -32,10 +35,12 @@ export class ApprovalRequestController {
     @Query('filter') filter?: string[],
     @Query('search') search?: number,
   ) {
-    return this.approvalRequestService.getAllApprovalRequests({sortColumn,
+    return this.approvalRequestService.getAllApprovalRequests({
+      sortColumn,
       sortOrder,
       filter,
-      search});
+      search,
+    });
   }
 
   @Get(':id')
@@ -60,7 +65,11 @@ export class ApprovalRequestController {
     @Body() leaveRequestId: { id: number },
     @Body() employeeId: { id: number },
   ) {
-    return this.approvalRequestService.approveRequest(+id, leaveRequestId, employeeId);
+    return this.approvalRequestService.approveRequest(
+      +id,
+      leaveRequestId,
+      employeeId,
+    );
   }
 
   @Delete(':id')

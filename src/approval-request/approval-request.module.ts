@@ -7,6 +7,11 @@ import { EmployeeService } from '../employee/employee.service';
 
 @Module({
   controllers: [ApprovalRequestController],
-  providers: [ApprovalRequestService, PrismaService, LeaveRequestService, EmployeeService],
+  providers: [
+    ApprovalRequestService,
+    PrismaService,
+    LeaveRequestService,
+    EmployeeService,
+  ],
 })
 export class ApprovalRequestModule {}
