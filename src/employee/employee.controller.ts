@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
-import { Employee } from '@prisma/client';
+import { Employee, User } from '@prisma/client';
 import { RolesGuard } from '../services/guards/roles.guard';
 
 @Controller('employees')
@@ -21,7 +21,7 @@ export class EmployeeController {
 
   @Post()
   @SetMetadata('roles', ['HR_MANAGER', 'ADMIN'])
-  createEmployee(@Body() data: Employee) {
+  createEmployee(@Body() data: Employee & User & {hrId: number}) {
     return this.employeeService.createEmployee(data);
   }
 

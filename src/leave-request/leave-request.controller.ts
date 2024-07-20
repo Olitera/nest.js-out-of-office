@@ -62,6 +62,13 @@ export class LeaveRequestController {
     return this.leaveRequestService.submitLeaveRequest(+id, data);
   }
 
+  @Put(":id/cancel")
+  @SetMetadata('roles', ['EMPLOYEE', 'ADMIN'])
+  cancelLeaveRequest(
+    @Param('id') id: number){
+    return this.leaveRequestService.cancelLeaveRequest(+id)
+  }
+
   @Delete(':id')
   @SetMetadata('roles', ['ADMIN'])
   deleteLeaveRequest(@Param('id') id: number) {

@@ -16,8 +16,4 @@ export class AuthService {
       expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME || '36h',
     });
   }
-
-  verifyRefreshToken(token: string) {
-    return this.jwtService.verify(token);
-  }
 }

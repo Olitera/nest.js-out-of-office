@@ -14,22 +14,24 @@ model Employee {
   position           String
   status             String
   peoplePartnerE     Employee?         @relation("PeoplePartner", fields: [peoplePartner], references: [id])
-  peoplePartner      Int?              @unique
+  peoplePartner      Int?
   outOfOfficeBalance Int
   LeaveRequest       LeaveRequest[]
   ApprovalRequest    ApprovalRequest[]
   Project            Project[]
-  employee           Employee?         @relation("PeoplePartner")
+  hrPartners         Employee[]        @relation("PeoplePartner")
+  userE              User              @relation(fields: [user], references: [id])
+  user               Int
 }
 
 model LeaveRequest {
   id              Int               @id @default(autoincrement())
-  employeeLR      Employee?         @relation(fields: [employee], references: [id])
-  employee        Int?
+  employeeLR      Employee          @relation(fields: [employee], references: [id])
+  employee        Int
   absenceReason   String
   startDate       DateTime
   endDate         DateTime
-  comment         String
+  comment         String?
   status          String
   ApprovalRequest ApprovalRequest[]
 }
@@ -45,19 +47,20 @@ model ApprovalRequest {
 }
 
 model Project {
-  id              Int       @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   projectType     String
   startDate       DateTime
   endDate         DateTime
-  projectManagerP Employee? @relation(fields: [projectManager], references: [id])
-  projectManager  Int?
-  comment         String
+  projectManagerP Employee @relation(fields: [projectManager], references: [id])
+  projectManager  Int
+  comment         String?
   status          String
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  login    String @unique
+  id       Int        @id @default(autoincrement())
+  login    String     @unique
   password String
   roles    String
+  Employee Employee[]
 }

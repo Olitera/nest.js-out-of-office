@@ -1,13 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../services/prisma/prisma.service';
-import { Employee } from '@prisma/client';
+import { Employee, User } from '@prisma/client';
 
 @Injectable()
 export class EmployeeService {
   constructor(private readonly prisma: PrismaService) {}
 
-  createEmployee(data: Employee) {
-    return this.prisma.employee.create({ data });
+  createEmployee(data: Employee & User &{hrId: number}) {
+    return this.prisma.user.create({
+      data: {
+        login: data.login,
+        password: data.password,
+        roles: data.roles,
+        Employee: {
+          create: {
+            fullname: data.fullname,
+            subdivision: data.subdivision,
+            position: data.roles,
+            status: data.status,
+            peoplePartner: data.hrId,
+            outOfOfficeBalance: data.outOfOfficeBalance
+          }
+        }
+      }
+    })
   }
 
   getAllEmployees(args?: {
@@ -26,6 +42,7 @@ export class EmployeeService {
         position: args?.filter?.includes('position'),
         peoplePartner: args?.filter?.includes('peoplePartner'),
         outOfOfficeBalance: args?.filter?.includes('outOfOfficeBalance'),
+        hrPartners: true
       },
       where: {
         fullname: {
