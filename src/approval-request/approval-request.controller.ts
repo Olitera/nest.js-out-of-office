@@ -58,18 +58,16 @@ export class ApprovalRequestController {
     return this.approvalRequestService.updateApprovalRequest(+id, data);
   }
 
-  @Put(':id/approve-request')
+  @Put(':id/approve')
   @SetMetadata('roles', ['HR_MANAGER', 'ADMIN'])
-  approveRequest(
-    @Param('id') id: number,
-    @Body() leaveRequestId: { id: number },
-    @Body() employeeId: { id: number },
-  ) {
-    return this.approvalRequestService.approveRequest(
-      +id,
-      leaveRequestId,
-      employeeId,
-    );
+  approveRequest(@Param('id') id: number, @Body() data: ApprovalRequest) {
+    return this.approvalRequestService.approveRequest(+id, data);
+  }
+
+  @Put(':id/reject')
+  @SetMetadata('roles', ['HR_MANAGER', 'ADMIN'])
+  rejectRequest(@Param('id') id: number, @Body() data: ApprovalRequest) {
+    return this.approvalRequestService.rejectRequest(+id, data);
   }
 
   @Delete(':id')

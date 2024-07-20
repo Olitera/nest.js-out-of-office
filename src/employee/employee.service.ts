@@ -81,17 +81,6 @@ export class EmployeeService {
     });
   }
 
-  recalculateAbsenceBalance(id: number) {
-    return this.prisma.employee.update({
-      where: { id },
-      data: {
-        outOfOfficeBalance: {
-          increment: 1,
-        },
-      },
-    });
-  }
-
   deleteEmployee(id: number) {
     return this.prisma.employee.delete({ where: { id } });
   }

@@ -1,16 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../services/prisma/prisma.service';
 import { ApprovalRequest } from '@prisma/client';
-import { LeaveRequestService } from '../leave-request/leave-request.service';
-import { EmployeeService } from '../employee/employee.service';
 
 @Injectable()
 export class ApprovalRequestService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private leaveRequestService: LeaveRequestService,
-    private employeeService: EmployeeService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   createApprovalRequest(data: ApprovalRequest) {
     return this.prisma.approvalRequest.create({ data });
@@ -21,7 +15,7 @@ export class ApprovalRequestService {
     filter?: string[];
     search?: string;
   }) {
-    const where = args?.search ? {id: +args.search } : undefined;
+    const where = args?.search ? { id: +args.search } : undefined;
     return this.prisma.approvalRequest.findMany({
       orderBy: [{ [args?.sortColumn ?? 'id']: args?.sortOrder ?? 'asc' }],
       select: {
@@ -31,7 +25,7 @@ export class ApprovalRequestService {
         status: args?.filter?.includes('status'),
         comment: args?.filter?.includes('comment'),
       },
-      where
+      where,
     });
   }
 
@@ -43,24 +37,51 @@ export class ApprovalRequestService {
     return this.prisma.approvalRequest.update({ where: { id }, data });
   }
 
-  async approveRequest(
-    id: number,
-    leaveRequest: { id: number },
-    employee: { id: number },
-  ) {
-    return this.prisma.approvalRequest
-      .update({
-        where: { id },
-        data: { status: 'approved' },
-        include: {
-          leaveRequestAR: true,
-          approverAR: true,
+  async approveRequest(id: number, data: ApprovalRequest) {
+    const leaveRequest = await this.prisma.leaveRequest.findUnique({
+      where: { id: data.leaveRequest },
+    });
+    const employee = await this.prisma.employee.findUnique({
+      where: { id: leaveRequest.employee },
+    });
+    return this.prisma.employee.update({
+      where: { id: employee.id },
+      data: {
+        outOfOfficeBalance: { increment: 1 },
+        LeaveRequest: {
+          update: {
+            where: { id: leaveRequest.id },
+            data: {
+              status: 'approve',
+              ApprovalRequest: {
+                update: {
+                  where: { id },
+                  data: { status: 'approve' },
+                },
+              },
+            },
+          },
         },
-      })
-      .then(() => {
-        this.leaveRequestService.approveLeaveRequest(leaveRequest.id);
-        this.employeeService.recalculateAbsenceBalance(employee.id);
-      });
+      },
+      include: {
+        LeaveRequest: true,
+      },
+    });
+  }
+
+  rejectRequest(id: number, data: ApprovalRequest) {
+    return this.prisma.leaveRequest.update({
+      where: { id: data.leaveRequest },
+      data: {
+        status: 'reject',
+        ApprovalRequest: {
+          update: {
+            where: { id },
+            data: { status: 'rejected' },
+          },
+        },
+      },
+    });
   }
   deleteApprovalRequest(id: number) {
     return this.prisma.approvalRequest.delete({ where: { id } });

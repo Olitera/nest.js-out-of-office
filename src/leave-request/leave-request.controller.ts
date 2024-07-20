@@ -37,7 +37,7 @@ export class LeaveRequestController {
       sortColumn,
       sortOrder,
       filter,
-      search
+      search,
     });
   }
 

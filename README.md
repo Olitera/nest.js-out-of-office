@@ -158,23 +158,48 @@ The project is divided into several modules:
 
 ### Approval requests
 
-   - Create Approval request: `POST /approvalrequests`
    - Get All Approval requests: `GET /approvalrequests`
 
      Query Params:
        - sortColumn (optional): column to sort by.
        - sortOrder (optional): sort order (asc or desc).
        - filter (optional): array of fields to include in the response.
-       - search (optional): search string.
+       - search (optional): search by request number.
 
    - Sort table rows using sorting in the column headers, for example sort by status in desc order : `GET /approvalrequests?
      sortColumn=status&sortOrder=desc`
    - Filter for table rows, for example by such as approver and leaveRequests: `GET /approvalrequests?filter=approver,leaveRequest`
-
+   - Search by request number for table rows, for example 1 : `GET /approvalrequests?search=1`
 
 
    - Get Approval request by ID, open a approval request: `GET /approvalrequests/:id`
    - Update Approval request: `PUT /approvalrequests/:id`
+     Body:
+```{
+   "approver": 1,
+   "leaveRequest": 3,
+   "status": "new",
+   "comment": "no"
+}    
+```     
+   - Approve the request `PUT /approvalrequests/:id/approve`
+     Body:
+```{
+   "approver": 1,
+   "leaveRequest": 3,
+   "status": "new",
+   "comment": "no"
+}
+```
+   - Reject the request: `PUT /approvalrequests/:id/reject`
+     Body:
+```{
+   "approver": 1,
+   "leaveRequest": 3,
+   "status": "new",
+   "comment": "no"
+}
+```
    - Delete Approval request: `DELETE /approvalrequests/:id`
 
 ### Projects

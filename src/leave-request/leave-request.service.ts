@@ -32,7 +32,7 @@ export class LeaveRequestService {
     filter?: string[];
     search?: string;
   }) {
-    const where = args?.search ? {id: +args.search } : undefined;
+    const where = args?.search ? { id: +args.search } : undefined;
     return this.prisma.leaveRequest.findMany({
       orderBy: [{ [args?.sortColumn ?? 'id']: args?.sortOrder ?? 'asc' }],
       select: {
@@ -44,7 +44,7 @@ export class LeaveRequestService {
         comment: args?.filter?.includes('comment'),
         status: args?.filter?.includes('status'),
       },
-      where
+      where,
     });
   }
 
@@ -88,13 +88,6 @@ export class LeaveRequestService {
           deleteMany: {},
         },
       },
-    });
-  }
-
-  approveLeaveRequest(id: number) {
-    return this.prisma.leaveRequest.update({
-      where: { id },
-      data: { status: 'approved' },
     });
   }
 
