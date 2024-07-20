@@ -21,7 +21,7 @@ export class LeaveRequestController {
 
   @Post()
   @SetMetadata('roles', ['EMPLOYEE', 'ADMIN'])
-  createLeaveRequest(@Body() data: LeaveRequest & { employee: number }) {
+  createLeaveRequest(@Body() data: LeaveRequest & { employeeId: number }) {
     return this.leaveRequestService.createLeaveRequest(data);
   }
 
@@ -31,13 +31,13 @@ export class LeaveRequestController {
     @Query('sortColumn') sortColumn?: string,
     @Query('sortOrder') sortOrder?: 'asc' | 'desc',
     @Query('filter') filter?: string[],
-    @Query('search') search?: number,
+    @Query('search') search?: string,
   ) {
     return this.leaveRequestService.getAllLeaveRequests({
       sortColumn,
       sortOrder,
       filter,
-      search,
+      search
     });
   }
 
@@ -62,11 +62,10 @@ export class LeaveRequestController {
     return this.leaveRequestService.submitLeaveRequest(+id, data);
   }
 
-  @Put(":id/cancel")
+  @Put(':id/cancel')
   @SetMetadata('roles', ['EMPLOYEE', 'ADMIN'])
-  cancelLeaveRequest(
-    @Param('id') id: number){
-    return this.leaveRequestService.cancelLeaveRequest(+id)
+  cancelLeaveRequest(@Param('id') id: number) {
+    return this.leaveRequestService.cancelLeaveRequest(+id);
   }
 
   @Delete(':id')

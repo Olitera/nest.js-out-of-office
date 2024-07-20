@@ -21,7 +21,7 @@ export class EmployeeController {
 
   @Post()
   @SetMetadata('roles', ['HR_MANAGER', 'ADMIN'])
-  createEmployee(@Body() data: Employee & User & {hrId: number}) {
+  createEmployee(@Body() data: Employee & User & { hrId: number }) {
     return this.employeeService.createEmployee(data);
   }
 
@@ -53,7 +53,7 @@ export class EmployeeController {
     return this.employeeService.updateEmployee(+id, data);
   }
 
-  @Put(':id/employee-status')
+  @Put(':id/status')
   @SetMetadata('roles', ['HR_MANAGER', 'ADMIN'])
   changeEmployeeStatus(
     @Param('id') id: number,

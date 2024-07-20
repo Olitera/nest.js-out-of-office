@@ -26,12 +26,12 @@ export class AuthController {
 
   @Post('signup/hr')
   async signupHr(
-    @Body() data: { login: string; password: string; } & Employee,
+    @Body() data: { login: string; password: string } & Employee,
     @Res() res,
   ) {
     const roles = 'HR_MANAGER';
     try {
-      const user = await this.usersService.createUser({ ...data, roles } );
+      const user = await this.usersService.createUser({ ...data, roles });
       res.status(200).send(user);
     } catch (e) {
       if (/Unique/.test(e.message)) {

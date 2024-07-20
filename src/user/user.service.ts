@@ -6,7 +6,9 @@ import { Employee } from '@prisma/client';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  createUser(data: { login: string; password: string; roles: string } & Employee) {
+  createUser(
+    data: { login: string; password: string; roles: string } & Employee,
+  ) {
     return this.prisma.user.create({
       data: {
         login: data.login,
@@ -16,12 +18,12 @@ export class UserService {
           create: {
             fullname: data.fullname,
             subdivision: data.subdivision,
-            position: data.position,
+            position: data.roles,
             status: data.status,
-            outOfOfficeBalance: data.outOfOfficeBalance
-          }
-        }
-      }
+            outOfOfficeBalance: data.outOfOfficeBalance,
+          },
+        },
+      },
     });
   }
 

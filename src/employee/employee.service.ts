@@ -6,7 +6,7 @@ import { Employee, User } from '@prisma/client';
 export class EmployeeService {
   constructor(private readonly prisma: PrismaService) {}
 
-  createEmployee(data: Employee & User &{hrId: number}) {
+  createEmployee(data: Employee & User & { hrId: number }) {
     return this.prisma.user.create({
       data: {
         login: data.login,
@@ -19,11 +19,11 @@ export class EmployeeService {
             position: data.roles,
             status: data.status,
             peoplePartner: data.hrId,
-            outOfOfficeBalance: data.outOfOfficeBalance
-          }
-        }
-      }
-    })
+            outOfOfficeBalance: data.outOfOfficeBalance,
+          },
+        },
+      },
+    });
   }
 
   getAllEmployees(args?: {
@@ -42,7 +42,6 @@ export class EmployeeService {
         position: args?.filter?.includes('position'),
         peoplePartner: args?.filter?.includes('peoplePartner'),
         outOfOfficeBalance: args?.filter?.includes('outOfOfficeBalance'),
-        hrPartners: true
       },
       where: {
         fullname: {

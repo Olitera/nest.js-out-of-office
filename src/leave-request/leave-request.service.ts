@@ -6,9 +6,9 @@ import { LeaveRequest } from '@prisma/client';
 export class LeaveRequestService {
   constructor(private readonly prisma: PrismaService) {}
 
-  createLeaveRequest(data: LeaveRequest & { employee: number }) {
+  createLeaveRequest(data: LeaveRequest & { employeeId: number }) {
     return this.prisma.employee.update({
-      where: { id: data.employee },
+      where: { id: data.employeeId },
       data: {
         LeaveRequest: {
           create: {
@@ -30,7 +30,7 @@ export class LeaveRequestService {
     sortColumn?: string;
     sortOrder?: 'asc' | 'desc';
     filter?: string[];
-    search?: number;
+    search?: string;
   }) {
     return this.prisma.leaveRequest.findMany({
       orderBy: [{ [args?.sortColumn ?? 'id']: args?.sortOrder ?? 'asc' }],
@@ -43,9 +43,9 @@ export class LeaveRequestService {
         comment: args?.filter?.includes('comment'),
         status: args?.filter?.includes('status'),
       },
-      where: {
-        id: args?.search,
-      },
+      // where: {
+      //   id: +args?.search,
+      // },
     });
   }
 
@@ -81,9 +81,6 @@ export class LeaveRequestService {
     await this.prisma.approvalRequest.deleteMany({
       where: { leaveRequest: id },
     });
-    this.prisma.approvalRequest
-      .findFirst({ where: { leaveRequest: id } })
-      .then(({ id }) => this.prisma.approvalRequest.delete({ where: { id } }));
     return this.prisma.leaveRequest.update({
       where: { id },
       data: {

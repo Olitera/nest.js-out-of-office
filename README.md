@@ -67,7 +67,6 @@ The project is divided into several modules:
    Endpoints:
    - POST `/auth/signup/hr`
    - POST `/auth/signup/manager`
-   - POST `/auth/signup/employee`
    - POST `/auth/signup/admin`
 
    Body:
@@ -109,12 +108,23 @@ The project is divided into several modules:
    - Get Employee by ID, open an employee: `GET /employees/:id`
    - Update Employee: `PUT /employees/:id`
    - Assign an employee to projects: `PUT /employees/:id/assign-to-project`
-   - Deactivate Employee: `PUT /employees/:id/employee-status?status=inactive`
+   - Deactivate Employee: `PUT /employees/:id/status?status=inactive`
    - Delete Employee: `DELETE /employees/:id`
 
 ## Leave requests
 
    - Create Leave request: `POST /leaverequests`
+     Body:
+```
+{
+   "absenceReason": "veryimportant",
+   "startDate": "2024-07-09T00:00:00Z",
+   "endDate": "2024-07-09T00:00:00Z",    
+   "comment": "no",
+   "status": "new",
+   "employeeId": 3 
+}
+```
    - Get All Leave requests: `GET /leaverequests`
 
      Query Params:
@@ -126,11 +136,24 @@ The project is divided into several modules:
    - Sort table rows using sorting in the column headers, for example sort by id in desc order : `GET /leaverequests?
      sortColumn=id&sortOrder=desc`
    - Filter for table rows, for example by such as employee and startDate: `GET /leaverequests?filter=employee,startDate`
-
-[//]: # (   - Search by name for table rows, for example by id : `GET /`)
+   - Search by id for table rows, for example 1 : `GET /leaverequests?searh=1`
 
    - Get Leave request by ID, open a leave request: `GET /leaverequests/:id`
    - Update Leave request: `PUT /leaverequests/:id`
+   - Submit Leave request: `PUT /leaverequests/:id/submit`
+     Body:
+```
+{
+   "absenceReason": "veryimportant",
+   "startDate": "2024-07-09T00:00:00Z",
+   "endDate": "2024-07-09T00:00:00Z",    
+   "comment": "veryimportant",
+   "status": "new",
+   "approverId": 1
+}
+
+```
+   - Cancel Leave request:  `PUT /leaverequests/:id/cancel`
    - Delete Leave request: `DELETE /leaverequests/:id`
 
 ### Approval requests
