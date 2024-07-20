@@ -8,7 +8,7 @@ export class LeaveRequestService {
 
   createLeaveRequest(data: LeaveRequest & { employeeId: number }) {
     return this.prisma.employee.update({
-      where: { id: data.employeeId },
+      where: { id: data.employeeId},
       data: {
         LeaveRequest: {
           create: {

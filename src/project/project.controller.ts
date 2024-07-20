@@ -53,7 +53,7 @@ export class ProjectController {
     return this.projectService.updateProject(+id, data);
   }
 
-  @Put(':id/project-status')
+  @Put(':id/status')
   @SetMetadata('roles', ['PROJECT_MANAGER', 'ADMIN'])
   updateProjectStatus(
     @Param('id') id: number,

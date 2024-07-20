@@ -62,7 +62,7 @@ export class EmployeeController {
     return this.employeeService.changeStatusEmployee(+id, status);
   }
 
-  @Put(':id/assign-to-project')
+  @Put(':id/assign')
   @SetMetadata('roles', ['PROJECT_MANAGER', 'ADMIN'])
   assignEmployeeToProject(
     @Param('id') id: number,

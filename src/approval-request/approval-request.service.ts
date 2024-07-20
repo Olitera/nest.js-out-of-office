@@ -37,26 +37,29 @@ export class ApprovalRequestService {
     return this.prisma.approvalRequest.update({ where: { id }, data });
   }
 
-  async approveRequest(id: number, data: ApprovalRequest) {
+  async approveRequest(id: number, data: { leaveRequestId: number }) {
     const leaveRequest = await this.prisma.leaveRequest.findUnique({
-      where: { id: data.leaveRequest },
+      where: { id: data.leaveRequestId },
     });
     const employee = await this.prisma.employee.findUnique({
       where: { id: leaveRequest.employee },
     });
+    const startDate = new Date(leaveRequest.startDate);
+    const endDate = new Date(leaveRequest.endDate);
+    const absentDays = Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24));
     return this.prisma.employee.update({
       where: { id: employee.id },
       data: {
-        outOfOfficeBalance: { increment: 1 },
+        outOfOfficeBalance: { increment: absentDays },
         LeaveRequest: {
           update: {
             where: { id: leaveRequest.id },
             data: {
-              status: 'approve',
+              status: 'approved',
               ApprovalRequest: {
                 update: {
                   where: { id },
-                  data: { status: 'approve' },
+                  data: { status: 'approved' },
                 },
               },
             },
@@ -69,11 +72,11 @@ export class ApprovalRequestService {
     });
   }
 
-  rejectRequest(id: number, data: ApprovalRequest) {
+  rejectRequest(id: number, data: {leaveRequestId: number}) {
     return this.prisma.leaveRequest.update({
-      where: { id: data.leaveRequest },
+      where: { id: data.leaveRequestId },
       data: {
-        status: 'reject',
+        status: 'rejected',
         ApprovalRequest: {
           update: {
             where: { id },

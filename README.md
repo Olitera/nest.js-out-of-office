@@ -107,7 +107,13 @@ The project is divided into several modules:
 
    - Get Employee by ID, open an employee: `GET /employees/:id`
    - Update Employee: `PUT /employees/:id`
-   - Assign an employee to projects: `PUT /employees/:id/assign-to-project`
+   - Assign an employee to projects: `PUT /employees/:id/assign`
+     Body:
+```
+{
+   "id": 2; //this is id of assigned project
+}
+```
    - Deactivate Employee: `PUT /employees/:id/status?status=inactive`
    - Delete Employee: `DELETE /employees/:id`
 
@@ -140,6 +146,17 @@ The project is divided into several modules:
 
    - Get Leave request by ID, open a leave request: `GET /leaverequests/:id`
    - Update Leave request: `PUT /leaverequests/:id`
+     Body:
+```
+{
+    "employee": 2,
+    "absenceReason": "veryimportant",
+    "startDate": "2024-07-09T00:00:00.000Z",
+    "endDate": "2024-07-12T00:00:00.000Z",
+    "comment": "veryimportant",
+    "status": "approve"
+}
+```
    - Submit Leave request: `PUT /leaverequests/:id/submit`
      Body:
 ```
@@ -184,20 +201,16 @@ The project is divided into several modules:
 ```     
    - Approve the request `PUT /approvalrequests/:id/approve`
      Body:
-```{
-   "approver": 1,
-   "leaveRequest": 3,
-   "status": "new",
-   "comment": "no"
+```
+{
+   "leaveRequestId": 4
 }
 ```
    - Reject the request: `PUT /approvalrequests/:id/reject`
      Body:
-```{
-   "approver": 1,
-   "leaveRequest": 3,
-   "status": "new",
-   "comment": "no"
+```
+{
+   "leaveRequestId": 4
 }
 ```
    - Delete Approval request: `DELETE /approvalrequests/:id`
@@ -219,7 +232,7 @@ The project is divided into several modules:
 
 - Get Project by ID, open a project: `GET /projects/:id`
 - Update Project: `PUT /projects/:id`
-- Deactivate Project: `PUT /projects/:id/project-status?status=inactive`
+- Deactivate Project: `PUT /projects/:id/status?status=inactive`
 - Delete Project: `DELETE /projects/:id`
 
 
