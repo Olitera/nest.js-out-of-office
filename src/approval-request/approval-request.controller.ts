@@ -33,7 +33,7 @@ export class ApprovalRequestController {
     @Query('sortColumn') sortColumn?: string,
     @Query('sortOrder') sortOrder?: 'asc' | 'desc',
     @Query('filter') filter?: string[],
-    @Query('search') search?: number,
+    @Query('search') search?: string,
   ) {
     return this.approvalRequestService.getAllApprovalRequests({
       sortColumn,

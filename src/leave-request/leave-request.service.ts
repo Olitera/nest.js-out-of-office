@@ -32,6 +32,7 @@ export class LeaveRequestService {
     filter?: string[];
     search?: string;
   }) {
+    const where = args?.search ? {id: +args.search } : undefined;
     return this.prisma.leaveRequest.findMany({
       orderBy: [{ [args?.sortColumn ?? 'id']: args?.sortOrder ?? 'asc' }],
       select: {
@@ -43,9 +44,7 @@ export class LeaveRequestService {
         comment: args?.filter?.includes('comment'),
         status: args?.filter?.includes('status'),
       },
-      // where: {
-      //   id: +args?.search,
-      // },
+      where
     });
   }
 

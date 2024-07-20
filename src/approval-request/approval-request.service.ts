@@ -19,8 +19,9 @@ export class ApprovalRequestService {
     sortColumn?: string;
     sortOrder?: 'asc' | 'desc';
     filter?: string[];
-    search?: number;
+    search?: string;
   }) {
+    const where = args?.search ? {id: +args.search } : undefined;
     return this.prisma.approvalRequest.findMany({
       orderBy: [{ [args?.sortColumn ?? 'id']: args?.sortOrder ?? 'asc' }],
       select: {
@@ -30,9 +31,7 @@ export class ApprovalRequestService {
         status: args?.filter?.includes('status'),
         comment: args?.filter?.includes('comment'),
       },
-      where: {
-        id: args?.search,
-      },
+      where
     });
   }
 
