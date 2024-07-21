@@ -68,7 +68,7 @@ The project is divided into several modules:
 
    Endpoints:
    - `POST /auth/signup/hr`
-     Body:
+   - Body:
 ```
 {
    "login": "10",
@@ -80,7 +80,7 @@ The project is divided into several modules:
    "outOfOfficeBalance": 0
 }
 ```
-   Response:
+   - Response:
 ```
 {
     "id": 6,
@@ -91,7 +91,7 @@ The project is divided into several modules:
 
 ```
    - POST `/auth/signup/admin`
-   Body:
+   - Body:
 ```
 {
    "login": "11",
@@ -103,7 +103,7 @@ The project is divided into several modules:
    "outOfOfficeBalance": 0
 }
 ```
-   Response:
+   - Response:
 ```
 {
     "id": 7,

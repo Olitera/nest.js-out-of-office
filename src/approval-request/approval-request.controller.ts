@@ -9,10 +9,13 @@ import {
   Query,
   SetMetadata,
   UseGuards,
+  Res
 } from '@nestjs/common';
 import { ApprovalRequestService } from './approval-request.service';
 import { ApprovalRequest } from '@prisma/client';
 import { RolesGuard } from '../services/guards/roles.guard';
+import { Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
 
 @Controller('approvalrequests')
 @UseGuards(RolesGuard)
@@ -45,8 +48,17 @@ export class ApprovalRequestController {
 
   @Get(':id')
   @SetMetadata('roles', ['HR_MANAGER', 'PROJECT_MANAGER', 'ADMIN'])
-  getApprovalRequestById(@Param('id') id: number) {
-    return this.approvalRequestService.getApprovalRequestById(+id);
+  async getApprovalRequestById(
+    @Param('id') id: number,
+    @Res({passthrough: true}) res: Response) {
+    const approvalRequest =  await this.approvalRequestService.getApprovalRequestById(+id);
+    if(!approvalRequest) {
+      res
+        .status(StatusCodes.NOT_FOUND)
+        .send('Approval Request not found');
+      return
+    }
+    return approvalRequest
   }
 
   @Put(':id')
