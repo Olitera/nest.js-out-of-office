@@ -347,7 +347,7 @@ The project is divided into several modules:
    - Endpoint: `DELETE /leaverequests/:id`
    - Roles: ADMIN
 
-### Approval requests
+## Approval requests
    Description: new approval request is created when EMPLOYEE submit Leave request
 
 #### Get All Approval requests:
@@ -358,15 +358,17 @@ The project is divided into several modules:
        - sortOrder (optional): sort order (asc or desc).
        - filter (optional): array of fields to include in the response.
        - search (optional): search by request number.
-   - Sort table rows using sorting in the column headers, for example sort by status in desc order: `GET /approvalrequests?
-     sortColumn=status&sortOrder=desc`
+   - Sort table rows using sorting in the column headers, for example sort by status in desc order: `GET /approvalrequests?sortColumn=status&sortOrder=desc`
    - Filter for table rows, for example by such as approver and leaveRequests: `GET /approvalrequests?filter=approver,leaveRequest`
    - Search by request number for table rows, for example 1: `GET /approvalrequests?search=1`
 
+#### Get Approval request by ID, open a approval request:
+   - Endpoint: `GET /approvalrequests/:id`
+   - Roles: HR_MANAGER, PROJECT_MANAGER, ADMIN
 
-#### Get Approval request by ID, open a approval request: `GET /approvalrequests/:id`
-
-#### Update Approval request: `PUT /approvalrequests/:id`
+#### Update Approval request: 
+   - Endpoint: `PUT /approvalrequests/:id`
+   - Roles: ADMIN
      Body:
 ```{
    "approver": 1,
@@ -375,41 +377,137 @@ The project is divided into several modules:
    "comment": "no"
 }    
 ```     
-   - Approve the request `PUT /approvalrequests/:id/approve`
-     Body:
+#### Approve the request:
+   - Endpoint: `PUT /approvalrequests/:id/approve`
+   - Roles: HR_MANAGER, PROJECT_MANAGER, ADMIN
+   - Description: related leave request is updated with the corresponding status,
+     and employee absence balance is recalculated
+   - Body:
 ```
 {
-   "leaveRequestId": 4
+   "leaveRequestId": 5
 }
 ```
-   - Reject the request: `PUT /approvalrequests/:id/reject`
-     Body:
+   - Response:
 ```
 {
-   "leaveRequestId": 4
+    "id": 2,
+    "fullname": "Anna",
+    "subdivision": "mmb",
+    "position": "EMPLOYEE",
+    "status": "inactive",
+    "peoplePartner": 1,
+    "outOfOfficeBalance": 7,
+    "user": 2,
+    "LeaveRequest": [
+        {
+            "id": 5,
+            "employee": 2,
+            "absenceReason": "veryimportant",
+            "startDate": "2024-07-09T00:00:00.000Z",
+            "endDate": "2024-07-14T00:00:00.000Z",
+            "comment": "important",
+            "status": "approved"
+        }
+    ]
 }
 ```
-   - Delete Approval request: `DELETE /approvalrequests/:id`
+#### Reject the request:
+   - Endpoint: `PUT /approvalrequests/:id/reject`
+   - Roles: HR_MANAGER, PROJECT_MANAGER, ADMIN
+   - Description: related leave request is updated with the corresponding status.
+   - Body:
+```
+{
+   "leaveRequestId": 1
+}
+```
+   - Response:
+```
+{
+    "id": 1,
+    "employee": 2,
+    "absenceReason": "veryimportant",
+    "startDate": "2024-07-09T00:00:00.000Z",
+    "endDate": "2024-07-12T00:00:00.000Z",
+    "comment": "veryimportant",
+    "status": "rejected"
+}
+```
 
-### Projects
+#### Delete Approval request:
+   - Endpoint: `DELETE /approvalrequests/:id`
+   - Roles: ADMIN
 
-- Create Project: `POST /projects`
-- Get All Projects: `GET /projects`
+## Projects
 
-  Query Params:
-    - sortColumn (optional): column to sort by.
-    - sortOrder (optional): sort order (asc or desc).
-    - filter (optional): array of fields to include in the response.
-    - search (optional): search string.
+#### Create Project:
+   - Endpoint: `POST /projects`
+   - Roles: PROJECT_MANAGER, ADMIN
+   - Body:
+```
+{
+   "projectType": "APP",
+   "startDate": "2024-07-09T00:00:00Z",
+   "endDate": "2024-07-21T00:00:00Z",
+   "projectManager": 5,
+   "comment": "no",
+   "status": "new"
+}
+```
 
-  - Sort table rows using sorting in the column headers, for example sort by comment in asc order : `GET /projects?sortColumn=comment&sortOrder=asc`
-  - Filter for table rows, for example by such as fullname and status: `GET /projects?filter=projectType`
+#### Get All Projects:
+   - Endpoint: `GET /projects`
+   - Roles: PROJECT_MANAGER, HR_MANAGER, ADMIN
+   - Query Params:
+     - sortColumn (optional): column to sort by.
+     - sortOrder (optional): sort order (asc or desc).
+     - filter (optional): array of fields to include in the response.
+     - search (optional): search string.
+   - Sort table rows using sorting in the column headers, for example sort by comment in asc order: `GET /projects?sortColumn=comment&sortOrder=asc`
+   - Filter for table rows, for example by such as projectType: `GET /projects?filter=projectType`
+   - Search by id for table rows, for example 1: `GET /projects?search=1`
  
 
-- Get Project by ID, open a project: `GET /projects/:id`
-- Update Project: `PUT /projects/:id`
-- Deactivate Project: `PUT /projects/:id/status?status=inactive`
-- Delete Project: `DELETE /projects/:id`
+#### Get Project by ID, open a project:
+   - Endpoint: `GET /projects/:id`
+   - Roles: PROJECT_MANAGER, HR_MANAGER, ADMIN
+
+#### Update Project:
+   - Endpoint: `PUT /projects/:id`
+   - Roles: PROJECT_MANAGER, ADMIN
+   - Body:
+```
+{
+  "projectType": "Task",
+   "startDate": "2024-07-09T00:00:00.000Z",
+   "endDate": "2024-07-30T00:00:00.000Z",
+   "projectManager": 4,
+   "comment": "no", 
+   "status": "new"
+}
+```
+
+#### Deactivate Project:
+   - Endpoint: `PUT /projects/:id/status?status=inactive`
+   - Roles: PROJECT_MANAGER, ADMIN
+   - Query Params: status (inactive for deactivate employee, another one for active)
+   - Response:
+```
+{
+    "id": 4,
+    "projectType": "APP",
+    "startDate": "2024-07-09T00:00:00.000Z",
+    "endDate": "2024-07-21T00:00:00.000Z",
+    "projectManager": 5,
+    "comment": "no",
+    "status": "inactive"
+}
+```
+
+#### Delete Project:
+   - Endpoint: `DELETE /projects/:id`
+   - Roles: ADMIN
 
 
 ## Test

@@ -50,7 +50,7 @@ export class ApprovalRequestController {
   }
 
   @Put(':id')
-  @SetMetadata('roles', ['HR_MANAGER', 'PROJECT_MANAGER', 'ADMIN'])
+  @SetMetadata('roles', ['ADMIN'])
   updateApprovalRequest(
     @Param('id') id: number,
     @Body() data: ApprovalRequest,
@@ -59,14 +59,20 @@ export class ApprovalRequestController {
   }
 
   @Put(':id/approve')
-  @SetMetadata('roles', ['HR_MANAGER', 'ADMIN'])
-  approveRequest(@Param('id') id: number, @Body() data: {leaveRequestId: number}) {
+  @SetMetadata('roles', ['HR_MANAGER', 'PROJECT_MANAGER', 'ADMIN'])
+  approveRequest(
+    @Param('id') id: number,
+    @Body() data: { leaveRequestId: number },
+  ) {
     return this.approvalRequestService.approveRequest(+id, data);
   }
 
   @Put(':id/reject')
-  @SetMetadata('roles', ['HR_MANAGER', 'ADMIN'])
-  rejectRequest(@Param('id') id: number, @Body() data: {leaveRequestId: number}) {
+  @SetMetadata('roles', ['HR_MANAGER', 'PROJECT_MANAGER', 'ADMIN'])
+  rejectRequest(
+    @Param('id') id: number,
+    @Body() data: { leaveRequestId: number },
+  ) {
     return this.approvalRequestService.rejectRequest(+id, data);
   }
 

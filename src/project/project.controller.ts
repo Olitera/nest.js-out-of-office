@@ -63,7 +63,7 @@ export class ProjectController {
   }
 
   @Delete(':id')
-  @SetMetadata('roles', ['PROJECT_MANAGER', 'ADMIN'])
+  @SetMetadata('roles', ['ADMIN'])
   deleteProject(@Param('id') id: number) {
     return this.projectService.deleteProject(+id);
   }

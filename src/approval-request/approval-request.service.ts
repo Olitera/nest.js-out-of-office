@@ -46,7 +46,9 @@ export class ApprovalRequestService {
     });
     const startDate = new Date(leaveRequest.startDate);
     const endDate = new Date(leaveRequest.endDate);
-    const absentDays = Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24));
+    const absentDays = Math.floor(
+      (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24),
+    );
     return this.prisma.employee.update({
       where: { id: employee.id },
       data: {
@@ -72,7 +74,7 @@ export class ApprovalRequestService {
     });
   }
 
-  rejectRequest(id: number, data: {leaveRequestId: number}) {
+  rejectRequest(id: number, data: { leaveRequestId: number }) {
     return this.prisma.leaveRequest.update({
       where: { id: data.leaveRequestId },
       data: {

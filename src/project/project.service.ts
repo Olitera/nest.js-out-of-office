@@ -27,7 +27,7 @@ export class ProjectService {
         comment: args?.filter?.includes('comment'),
         status: args?.filter?.includes('status'),
       },
-      where
+      where,
     });
   }
 
