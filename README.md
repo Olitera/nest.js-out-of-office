@@ -63,22 +63,60 @@ The project is divided into several modules:
 ### Auth
 
 #### Sign Up
-   Description: Registers a new user.
-   Endpoints:
-   - POST `/auth/signup/hr`
-   - POST `/auth/signup/manager`
-   - POST `/auth/signup/admin`
 
+##### Description: HR_MANAGER or ADMIN registers in the system, and a corresponding employee is created. In this case, it turns out that HR_MANAGER is also employees, but since they subsequently create other employees, they cannot have a single choice from the "Employee" table with the "HR Manager" position in the PeoplePartner field. Instead, they have an array of Employees they have created. 
+
+   Endpoints:
+   - `POST /auth/signup/hr`
+     Body:
+```
+{
+   "login": "10",
+   "password": "10",
+   "fullname": "David",
+   "subdivision": "mmb",
+   "position": "HR_MANAGER",
+   "status": "new",
+   "outOfOfficeBalance": 0
+}
+```
+   Response:
+```
+{
+    "id": 6,
+    "login": "10",
+    "password": "10",
+    "roles": "HR_MANAGER"
+}
+
+```
+   - POST `/auth/signup/admin`
    Body:
 ```
 {
-  "login": "string",
-  "password": "string",
-  "roles": "string"
+   "login": "11",
+   "password": "11",
+   "fullname": "Sem",
+   "subdivision": "mmb",
+   "position": "ADMIN",
+   "status": "new",
+   "outOfOfficeBalance": 0
 }
 ```
+   Response:
+```
+{
+    "id": 7,
+    "login": "11",
+    "password": "11",
+    "roles": "ADMIN"
+}
+
+```
+
 #### Login
-   Description: Authenticates a user and returns tokens.
+
+##### Description: authenticates a user and returns tokens. 
    Endpoint:
    - `POST /auth/login`
    Body:
@@ -87,40 +125,136 @@ The project is divided into several modules:
   "login": "string",
   "password": "string"
 }
-
+```
+   Response: 
+```
+{
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImxvZ2luIjoiMSIsImlhdCI6MTcyMTU2NDU3OSwiZXhwIjoxNzIxNjA3Nzc5fQ.i8iPfv4YncaBs0akeUV7B_yNQNwWEYl4HTVEkCxwT6s",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImxvZ2luIjoiMSIsImlhdCI6MTcyMTU2NDU3OSwiZXhwIjoxNzIxNjUwOTc5fQ.ZeBxGSzHoXTnz7eff7dI2SQvlB5Aic28ib4KWs8u5ZE"
+}
 ```
 
 ## Employees
-   - Create Employee: `POST /employees`
-   - Get All Employees: `GET /employees`
 
-     Query Params:
+#### Create Employee: 
+   - Endpoint: `POST /employees`
+   - Roles: HR_MANAGER, ADMIN
+   - Description: HR or admin can create a new employee and assign them the appropriate role, such as: HR_MANAGER, PROJECT_MANAGER, EMPLOYEE, ADMIN
+   - Body:
+```
+{
+   "login": "12",
+   "password": "12",
+   "roles": "EMPLOYEE",
+   "fullname": "Lukas",
+   "subdivision": "mmb",
+   "status": "new",
+   "outOfOfficeBalance": 0,
+   "hrId": 1; //this is id HR_MANAGER or ADMIN, who create this employee
+}
+```
+  - Response:
+```
+{
+    "id": 8,
+    "login": "12",
+    "password": "12",
+    "roles": "EMPLOYEE"
+}
+```
+
+#### Get All Employees: 
+   - Endpoint: `GET /employees`
+   - Roles: HR_MANAGER, ADMIN, PROJECT_MANAGER
+   - Query Params:
      - sortColumn (optional): column to sort by.
      - sortOrder (optional): sort order (asc or desc).
      - filter (optional): array of fields to include in the response.
      - search (optional): search string.
-
-   - Sort table rows using sorting in the column headers, for example sort by fullname in asc order : `GET /employees?
-     sortColumn=fullname&sortOrder=asc`
+   - Sort table rows using sorting in the column headers, for example sort by fullname in asc order : `GET /employees?sortColumn=fullname&sortOrder=asc`
    - Filter for table rows, for example by such as fullname and status: `GET /employees?filter=fullname,status`
    - Search by name for table rows, for example by name Anna: `GET /employees?search=anna`
 
-   - Get Employee by ID, open an employee: `GET /employees/:id`
-   - Update Employee: `PUT /employees/:id`
-   - Assign an employee to projects: `PUT /employees/:id/assign`
-     Body:
+#### Get Employee by ID, open an employee:
+   - Endpoint: `GET /employees/:id`
+   - Roles: HR_MANAGER, ADMIN, PROJECT_MANAGER
+
+#### Update Employee: 
+   - Endpoint: `PUT /employees/:id`
+   - Roles: HR_MANAGER, ADMIN
+   - Body:
+```
+{
+   "fullname": "Lukas",
+   "subdivision": "mmb",
+   "status": "new",
+   "position": "PROJECT_MANAGER",
+   "peoplePartner": 1,
+   "outOfOfficeBalance": 0
+}
+```
+
+#### Assign an employee to projects: 
+   - Endpoint: `PUT /employees/:id/assign`
+   - Roles: PROJECT_MANAGER, ADMIN
+   - Body:
 ```
 {
    "id": 2; //this is id of assigned project
 }
 ```
-   - Deactivate Employee: `PUT /employees/:id/status?status=inactive`
-   - Delete Employee: `DELETE /employees/:id`
+   - Response:
+```
+{
+    "id": 3,
+    "fullname": "Kate",
+    "subdivision": "mmb",
+    "position": "EMPLOYEE",
+    "status": "new",
+    "peoplePartner": 1,
+    "outOfOfficeBalance": 0,
+    "user": 3,
+    "Project": [
+        {
+            "id": 2,
+            "projectType": "Doc",
+            "startDate": "2024-07-09T00:00:00.000Z",
+            "endDate": "2024-07-09T00:00:00.000Z",
+            "projectManager": 3,
+            "comment": "no",
+            "status": "inactive"
+        }
+    ]
+}
+```
+#### Deactivate Employee:
+   - Endpoint: `PUT /employees/:id/status?status=inactive`
+   - Roles: HR_MANAGER, ADMIN
+   - Query Params: status (inactive for deactivate employee, another one for active)
+   - Response:
+```
+{
+    "id": 8,
+    "fullname": "Lukas",
+    "subdivision": "mmb",
+    "position": "PROJECT_MANAGER",
+    "status": "inactive",
+    "peoplePartner": 1,
+    "outOfOfficeBalance": 0,
+    "user": 8
+}
+```
+
+#### Delete Employee:
+   - Endpoint: `DELETE /employees/:id`
+   - Roles: ADMIN
 
 ## Leave requests
 
-   - Create Leave request: `POST /leaverequests`
-     Body:
+#### Create Leave request: 
+   - Endpoint: `POST /leaverequests`
+   - Roles: EMPLOYEE, ADMIN
+   - Body:
 ```
 {
    "absenceReason": "veryimportant",
@@ -128,24 +262,28 @@ The project is divided into several modules:
    "endDate": "2024-07-09T00:00:00Z",    
    "comment": "no",
    "status": "new",
-   "employeeId": 3 
+   "employeeId": 3; // this is id Employee which create Leave request 
 }
 ```
-   - Get All Leave requests: `GET /leaverequests`
-
+#### Get All Leave requests:
+   - Endpoint: `GET /leaverequests`
+   - Roles: EMPLOYEE, HR_MANAGER, PROJECT_MANAGER, ADMIN
      Query Params:
        - sortColumn (optional): column to sort by.
        - sortOrder (optional): sort order (asc or desc).
        - filter (optional): array of fields to include in the response.
        - search (optional): search string.
-
-   - Sort table rows using sorting in the column headers, for example sort by id in desc order : `GET /leaverequests?
-     sortColumn=id&sortOrder=desc`
+   - Sort table rows using sorting in the column headers, for example sort by id in desc order : `GET /leaverequests?sortColumn=id&sortOrder=desc`
    - Filter for table rows, for example by such as employee and startDate: `GET /leaverequests?filter=employee,startDate`
-   - Search by id for table rows, for example 1 : `GET /leaverequests?searh=1`
+   - Search by id for table rows, for example 1 : `GET /leaverequests?search=1`
 
-   - Get Leave request by ID, open a leave request: `GET /leaverequests/:id`
-   - Update Leave request: `PUT /leaverequests/:id`
+#### Get Leave request by ID, open a leave request:
+   - Endpoint: `GET /leaverequests/:id`
+   - Roles: EMPLOYEE, HR_MANAGER, PROJECT_MANAGER, ADMIN
+
+#### Update Leave request: 
+   - Endpoint: `PUT /leaverequests/:id`
+   - Roles: EMPLOYEE, ADMIN
      Body:
 ```
 {
@@ -157,8 +295,13 @@ The project is divided into several modules:
     "status": "approve"
 }
 ```
-   - Submit Leave request: `PUT /leaverequests/:id/submit`
-     Body:
+
+#### Submit Leave request: 
+   - Endpoint: `PUT /leaverequests/:id/submit`
+   - Roles: EMPLOYEE, ADMIN
+   - Description: the status is updated to “submitted,” and a new approval request
+     is created for the responsible HR Manager and Project Managers responsible for employee’s projects
+   - Body:
 ```
 {
    "absenceReason": "veryimportant",
@@ -166,31 +309,64 @@ The project is divided into several modules:
    "endDate": "2024-07-09T00:00:00Z",    
    "comment": "veryimportant",
    "status": "new",
-   "approverId": 1
+   "approverId": 1 // this id for the responsible HR Manager and Project Managers responsible for employee’s projects
 }
 
 ```
-   - Cancel Leave request:  `PUT /leaverequests/:id/cancel`
-   - Delete Leave request: `DELETE /leaverequests/:id`
+  - Response:
+```
+{
+    "id": 5,
+    "employee": 2,
+    "absenceReason": "veryimportant",
+    "startDate": "2024-07-09T00:00:00.000Z",
+    "endDate": "2024-07-09T00:00:00.000Z",
+    "comment": "veryimportant",
+    "status": "submitted"
+}
+
+```
+#### Cancel Leave request: 
+   - Endpoint: `PUT /leaverequests/:id/cancel`
+   - Roles: EMPLOYEE, ADMIN
+   - Description: the status is updated to “canceled,” and approval requests are canceled if they already exist.
+   - Response:
+```
+{
+    "id": 6,
+    "employee": 8,
+    "absenceReason": "veryimportant",
+    "startDate": "2024-07-09T00:00:00.000Z",
+    "endDate": "2024-07-14T00:00:00.000Z",
+    "comment": "no",
+    "status": "cancelled"
+}
+```
+
+#### Delete Leave request: 
+   - Endpoint: `DELETE /leaverequests/:id`
+   - Roles: ADMIN
 
 ### Approval requests
+   Description: new approval request is created when EMPLOYEE submit Leave request
 
-   - Get All Approval requests: `GET /approvalrequests`
-
-     Query Params:
+#### Get All Approval requests:
+   - Endpoint: `GET /approvalrequests`
+   - Roles: HR_MANAGER, PROJECT_MANAGER, ADMIN
+   - Query Params:
        - sortColumn (optional): column to sort by.
        - sortOrder (optional): sort order (asc or desc).
        - filter (optional): array of fields to include in the response.
        - search (optional): search by request number.
-
-   - Sort table rows using sorting in the column headers, for example sort by status in desc order : `GET /approvalrequests?
+   - Sort table rows using sorting in the column headers, for example sort by status in desc order: `GET /approvalrequests?
      sortColumn=status&sortOrder=desc`
    - Filter for table rows, for example by such as approver and leaveRequests: `GET /approvalrequests?filter=approver,leaveRequest`
-   - Search by request number for table rows, for example 1 : `GET /approvalrequests?search=1`
+   - Search by request number for table rows, for example 1: `GET /approvalrequests?search=1`
 
 
-   - Get Approval request by ID, open a approval request: `GET /approvalrequests/:id`
-   - Update Approval request: `PUT /approvalrequests/:id`
+#### Get Approval request by ID, open a approval request: `GET /approvalrequests/:id`
+
+#### Update Approval request: `PUT /approvalrequests/:id`
      Body:
 ```{
    "approver": 1,
