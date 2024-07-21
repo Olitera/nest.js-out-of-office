@@ -9,7 +9,7 @@ import {
   Query,
   SetMetadata,
   UseGuards,
-  Res
+  Res,
 } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { Employee, User } from '@prisma/client';
@@ -24,13 +24,23 @@ export class EmployeeController {
 
   @Post()
   @SetMetadata('roles', ['HR_MANAGER', 'ADMIN'])
-  createEmployee(@Body() data: Employee & User & { hrId: number },
-  @Res({passthrough: true}) res: Response) {
-    if(!data?.fullname || !data?.subdivision || !data?.status  || !data?.login || !data?.password || !data?.roles  || !data?.hrId) {
+  createEmployee(
+    @Body() data: Employee & User & { hrId: number },
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    if (
+      !data?.fullname ||
+      !data?.subdivision ||
+      !data?.status ||
+      !data?.login ||
+      !data?.password ||
+      !data?.roles ||
+      !data?.hrId
+    ) {
       res
         .status(StatusCodes.BAD_REQUEST)
         .send('Required fields are not filled in');
-      return
+      return;
     }
     return this.employeeService.createEmployee(data);
   }
@@ -55,16 +65,14 @@ export class EmployeeController {
   @SetMetadata('roles', ['HR_MANAGER', 'PROJECT_MANAGER', 'ADMIN'])
   async getEmployeeById(
     @Param('id') id: number,
-    @Res({passthrough: true}) res: Response
-    ) {
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const employee = await this.employeeService.getEmployeeById(+id);
-    if(!employee) {
-      res
-        .status(StatusCodes.NOT_FOUND)
-        .send('Employee not found');
-      return
+    if (!employee) {
+      res.status(StatusCodes.NOT_FOUND).send('Employee not found');
+      return;
     }
-    return employee
+    return employee;
   }
 
   @Put(':id')

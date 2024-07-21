@@ -9,7 +9,7 @@ import {
   Query,
   SetMetadata,
   UseGuards,
-  Res
+  Res,
 } from '@nestjs/common';
 import { ApprovalRequestService } from './approval-request.service';
 import { ApprovalRequest } from '@prisma/client';
@@ -50,15 +50,15 @@ export class ApprovalRequestController {
   @SetMetadata('roles', ['HR_MANAGER', 'PROJECT_MANAGER', 'ADMIN'])
   async getApprovalRequestById(
     @Param('id') id: number,
-    @Res({passthrough: true}) res: Response) {
-    const approvalRequest =  await this.approvalRequestService.getApprovalRequestById(+id);
-    if(!approvalRequest) {
-      res
-        .status(StatusCodes.NOT_FOUND)
-        .send('Approval Request not found');
-      return
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const approvalRequest =
+      await this.approvalRequestService.getApprovalRequestById(+id);
+    if (!approvalRequest) {
+      res.status(StatusCodes.NOT_FOUND).send('Approval Request not found');
+      return;
     }
-    return approvalRequest
+    return approvalRequest;
   }
 
   @Put(':id')

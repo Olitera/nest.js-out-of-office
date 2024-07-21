@@ -2,6 +2,8 @@ import { Body, Controller, Post, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
 import { Employee } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
+import { StatusCodes } from 'http-status-codes';
 
 @Controller('auth')
 export class AuthController {
@@ -13,6 +15,10 @@ export class AuthController {
   @Post('login')
   async login(@Body() data: { login: string; password: string }, @Res() res) {
     const user = await this.usersService.getUserByLogin(data.login);
+    const isPasswordWrong = await bcrypt.compare(data.password, user?.password);
+    if (!isPasswordWrong) {
+      res.status(StatusCodes.BAD_REQUEST).send('Wrong password');
+    }
     const accessToken = this.authService.generateAccessToken({
       userId: user.id,
       login: user.login,

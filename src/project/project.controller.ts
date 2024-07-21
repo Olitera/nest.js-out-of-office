@@ -9,7 +9,7 @@ import {
   Query,
   SetMetadata,
   UseGuards,
-  Res
+  Res,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { Project } from '@prisma/client';
@@ -24,13 +24,20 @@ export class ProjectController {
 
   @Post()
   @SetMetadata('roles', ['PROJECT_MANAGER', 'ADMIN'])
-  createProject(@Body() data: Project,
-  @Res({passthrough: true}) res: Response) {
-    if(!data?.projectType || !data?.startDate || !data?.projectManager || !data?.status) {
+  createProject(
+    @Body() data: Project,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    if (
+      !data?.projectType ||
+      !data?.startDate ||
+      !data?.projectManager ||
+      !data?.status
+    ) {
       res
         .status(StatusCodes.BAD_REQUEST)
         .send('Required fields are not filled in');
-      return
+      return;
     } else {
       return this.projectService.createProject(data);
     }
@@ -56,15 +63,14 @@ export class ProjectController {
   @SetMetadata('roles', ['PROJECT_MANAGER', 'HR_MANAGER', 'ADMIN'])
   async getProjectById(
     @Param('id') id: number,
-  @Res({passthrough: true}) res: Response) {
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const project = await this.projectService.getProjectById(+id);
-    if(!project) {
-      res
-        .status(StatusCodes.NOT_FOUND)
-        .send('Project not found')
-      return
+    if (!project) {
+      res.status(StatusCodes.NOT_FOUND).send('Project not found');
+      return;
     }
-      return project
+    return project;
   }
 
   @Put(':id')
