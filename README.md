@@ -71,9 +71,9 @@ The project is divided into several modules:
    - Body:
 ```
 {
-   "login": "10",
-   "password": "10",
-   "fullname": "David",
+   "login": "20",
+   "password": "20",
+   "fullname": "Sem",
    "subdivision": "mmb",
    "position": "HR_MANAGER",
    "status": "new",
@@ -83,10 +83,21 @@ The project is divided into several modules:
    - Response:
 ```
 {
-    "id": 6,
-    "login": "10",
-    "password": "10",
-    "roles": "HR_MANAGER"
+    "id": 14,
+    "login": "20",
+    "roles": "HR_MANAGER",
+    "Employee": [
+        {
+            "id": 14,
+            "fullname": "Sem",
+            "subdivision": "mmb",
+            "position": "HR_MANAGER",
+            "status": "new",
+            "peoplePartner": null,
+            "outOfOfficeBalance": 0,
+            "user": 14
+        }
+    ]
 }
 
 ```
@@ -94,9 +105,9 @@ The project is divided into several modules:
    - Body:
 ```
 {
-   "login": "11",
-   "password": "11",
-   "fullname": "Sem",
+   "login": "21",
+   "password": "21",
+   "fullname": "Nora",
    "subdivision": "mmb",
    "position": "ADMIN",
    "status": "new",
@@ -106,12 +117,22 @@ The project is divided into several modules:
    - Response:
 ```
 {
-    "id": 7,
-    "login": "11",
-    "password": "11",
-    "roles": "ADMIN"
+    "id": 15,
+    "login": "21",
+    "roles": "ADMIN",
+    "Employee": [
+        {
+            "id": 15,
+            "fullname": "Nora",
+            "subdivision": "mmb",
+            "position": "ADMIN",
+            "status": "new",
+            "peoplePartner": null,
+            "outOfOfficeBalance": 0,
+            "user": 15
+        }
+    ]
 }
-
 ```
 
 #### Login
